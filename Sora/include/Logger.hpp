@@ -5,6 +5,7 @@ namespace sora
 {
 	namespace Logger
 	{
+		/// @brief ロガーの設定を行うための構造体。
 		struct Config
 		{
 			std::filesystem::path filepath;
@@ -13,7 +14,11 @@ namespace sora
 			std::string consolePattern;
 		};
 
+		/// @brief ロガーの設定を行う。
+		/// @param config ロガーの設定。
 		void Setup(const Config& config);
+
+		/// @brief ロガーのクリーンアップを行う。
 		void Cleanup();
 	};
 

@@ -6,6 +6,7 @@
 #include <vector>
 #include <filesystem>
 #include <memory>
+#include <cstdint>
 #include <cassert>
 
 #define NOMINMAX
@@ -15,7 +16,7 @@ using Microsoft::WRL::ComPtr;
 
 
 #include <d3d11.h>
-#include <d3dcompiler.h>
+#include <D3DCompiler.h>
 #include <DirectXColors.h>
 #include <DirectXTK/VertexTypes.h>
 #include <DirectXTK/WICTextureLoader.h>

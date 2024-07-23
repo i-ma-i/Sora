@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)\Intermediate\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)\Intermediate\$(Configuration)\Intermediate\</IntDir>
+    <OutDir>$(ProjectDir)\..\Intermediate\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)\..\Intermediate\$(Configuration)\Intermediate\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(ProjectDir)\Intermediate\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)\Intermediate\$(Configuration)\Intermediate\</IntDir>
+    <OutDir>$(ProjectDir)\..\Intermediate\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)\..\Intermediate\$(Configuration)\Intermediate\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
@@ -120,7 +120,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -140,7 +140,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -158,14 +158,38 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Input\CKeyboard.cpp" />
+    <ClCompile Include="src\Input\CMouse.cpp" />
+    <ClCompile Include="src\Core\Engine.cpp" />
+    <ClCompile Include="src\Core\Env.cpp" />
+    <ClCompile Include="src\Input\Input.cpp" />
+    <ClCompile Include="src\Core\Logger.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\tiny_obj_loader.h" />
+    <ClInclude Include="include\Application.hpp" />
+    <ClInclude Include="include\ButtonState.hpp" />
+    <ClInclude Include="include\CKeyboard.hpp" />
+    <ClInclude Include="include\CMouse.hpp" />
+    <ClInclude Include="include\Graphics.hpp" />
+    <ClInclude Include="include\Model.hpp" />
+    <ClInclude Include="include\Primitive.hpp" />
+    <ClInclude Include="include\ShaderLoader.hpp" />
+    <ClInclude Include="include\Engine.hpp" />
+    <ClInclude Include="include\Env.hpp" />
+    <ClInclude Include="include\IKeyboard.hpp" />
+    <ClInclude Include="include\GUI.hpp" />
+    <ClInclude Include="include\IMouse.hpp" />
+    <ClInclude Include="include\Input.hpp" />
+    <ClInclude Include="include\InputDevice.hpp" />
+    <ClInclude Include="include\Keyboard.hpp" />
     <ClInclude Include="include\Logger.hpp" />
+    <ClInclude Include="include\Mouse.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
