@@ -14,9 +14,9 @@ namespace sora
 	{
 		switch (m_device)
 		{
-		case sora::InputDevice::Keyboard:
+		case InputDevice::Keyboard:
 			return Engine::GetModule<IKeyboard>().Clicked(m_code);
-		case sora::InputDevice::Mouse:
+		case InputDevice::Mouse:
 			return Engine::GetModule<IMouse>().Clicked(m_code);
 		default:
 			return false;
@@ -27,9 +27,9 @@ namespace sora
 	{
 		switch (m_device)
 		{
-		case sora::InputDevice::Keyboard:
+		case InputDevice::Keyboard:
 			return Engine::GetModule<IKeyboard>().Pressed(m_code);
-		case sora::InputDevice::Mouse:
+		case InputDevice::Mouse:
 			return Engine::GetModule<IMouse>().Pressed(m_code);
 		default:
 			return false;
@@ -40,9 +40,9 @@ namespace sora
 	{
 		switch (m_device)
 		{
-		case sora::InputDevice::Keyboard:
+		case InputDevice::Keyboard:
 			return Engine::GetModule<IKeyboard>().Released(m_code);
-		case sora::InputDevice::Mouse:
+		case InputDevice::Mouse:
 			return Engine::GetModule<IMouse>().Released(m_code);
 		default:
 			return false;

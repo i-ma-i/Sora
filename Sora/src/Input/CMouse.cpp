@@ -4,10 +4,11 @@
 
 namespace sora
 {
-	void CMouse::Update()
+	void CMouse::Update(int wheel)
 	{
-		int x, y;
-		Uint32 buttons = SDL_GetMouseState(&x, &y);
+		Uint32 buttons = SDL_GetMouseState(&m_positionX, &m_positionY);
+		SDL_GetRelativeMouseState(&m_deltaX, &m_deltaY);
+		m_wheelValue = wheel;
 
 		for (int i = 1; i <= ButtonCount; i++)
 		{
@@ -31,5 +32,26 @@ namespace sora
 	{
 		assert(index <= ButtonCount);
 		return m_state[index].Released();
+	}
+
+	int CMouse::PositionX() const
+	{
+		return m_positionX;
+	}
+	int CMouse::PositionY() const
+	{
+		return m_positionY;
+	}
+	int CMouse::DeltaX() const
+	{
+		return m_deltaX;
+	}
+	int CMouse::DeltaY() const
+	{
+		return m_deltaY;
+	}
+	int CMouse::WheelValue() const
+	{
+		return m_wheelValue;
 	}
 }

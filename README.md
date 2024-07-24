@@ -24,29 +24,6 @@
 
 
 
-## アーキテクチャ
-
-### Application: マルチスレッド非対応
-・list<Module>
-- Logger
-- Keyboard
-- Mouse
-- Audio
-- AssetRegistry
-### Engine: マルチスレッド対応（要命名）
-・list<Module>
-- Graphics
-- Physics
-- Collision
-### Actor
-・list<Component>
-- Transform
-- Renderer
-- Rigidbody
-- Collider
-
-
-
 ## TODO
 - デバッグカメラ
 - シェーダー ライブラリのパッケージ化

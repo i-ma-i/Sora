@@ -10,6 +10,7 @@
 #include "ShaderLoader.hpp"
 #include "Model.hpp"
 #include "Primitive.hpp"
+#include "Camera.hpp"
 
 #include <magic_enum.hpp>
 
@@ -24,7 +25,6 @@
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "d3d11.lib")
 
-using namespace DirectX::SimpleMath;
 using namespace DirectX;
 
 namespace sora
@@ -36,6 +36,7 @@ namespace sora
 		std::unique_ptr<Engine> s_engine;
 		std::unique_ptr<Graphics> s_graphics;
 		std::unique_ptr<GUI> s_gui;
+		std::unique_ptr<Camera> s_camera;
 		HWND hWnd;
 		SDL_Window* s_window = nullptr;
 		std::unique_ptr<Model> model;
@@ -50,7 +51,7 @@ namespace sora
 		// 定数バッファの作成
 		struct ConstantBuffer
 		{
-			Matrix mvp;
+			DirectX::SimpleMath::Matrix mvp;
 		};
 
 		ConstantBuffer cb;
@@ -74,10 +75,9 @@ namespace sora
 			return true;
 		}
 
-		Matrix modelMatrix = Matrix::CreateTranslation(0.0f, 1.0f, 0.0f);
-		Matrix planeMatrix = Matrix::CreateTranslation(Vector3::Zero);
-		Matrix viewMatrix = Matrix::CreateLookAt(Vector3(0.0f, 1.0f, 0.0f), Vector3::Zero, Vector3::UnitY);
-		Matrix projectionMatrix;
+		DirectX::SimpleMath::Matrix planeMatrix = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, -1.0, 0 });
+		DirectX::SimpleMath::Matrix viewMatrix;
+		DirectX::SimpleMath::Matrix projectionMatrix;
 
 		// シェーダーオブジェクト
 		ComPtr<ID3D11VertexShader> gVertexShader;
@@ -169,7 +169,15 @@ namespace sora
 			hWnd = (HWND)wmInfo.info.win.window;
 
 			s_graphics = std::make_unique<Graphics>(hWnd);
-
+			s_camera = std::make_unique<Camera>(
+				DirectX::SimpleMath::Vector3(
+					Env::GetFloat("camera.position[0]"),
+					Env::GetFloat("camera.position[1]"),
+					Env::GetFloat("camera.position[2]")
+				)
+				, Env::GetFloat("camera.yaw")
+				, Env::GetFloat("camera.pitch")
+			);
 
 			if (!InitShaders()) {
 				LOG_ERROR("Failed to initialize shaders.");
@@ -185,7 +193,7 @@ namespace sora
 			s_gui = std::make_unique<GUI>(s_window, s_graphics->GetDevice(), s_graphics->GetDC());
 
 			// プロジェクション行列を設定
-			projectionMatrix = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4, (float)WIDTH / HEIGHT, 1.0f, 1000.0f);
+			projectionMatrix = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4, (float)WIDTH / HEIGHT, 1.0f, 1000.0f);
 
 			// アプリケーションの作成が正常に完了。
 			LOG_INFO("Creation completed successfully.");
@@ -227,6 +235,7 @@ namespace sora
 			}
 
 			SDL_Event event;
+			int mouseWheel = 0;
 			while (SDL_PollEvent(&event) != 0)
 			{
 				s_gui->ProcessEvent(&event);
@@ -235,20 +244,15 @@ namespace sora
 				{
 					return false;
 				}
+				if(event.type == SDL_MOUSEWHEEL)
+				{
+					mouseWheel = event.wheel.y;
+				}
 			}
 
 			Engine::GetModule<IKeyboard>().Update();
-			Engine::GetModule<IMouse>().Update();
-
-			static float modelRotationY = 0.0f;
-
-			// カメラの位置を更新
-			static float y = 5.0f;
-			static float radius = 10.0f;
-			static Vector3 focus = Vector3::Zero;
-			float camX = sin(modelRotationY) * radius;
-			float camZ = cos(modelRotationY) * radius;
-			viewMatrix = Matrix::CreateLookAt(Vector3(camX, y, camZ), focus, Vector3::UnitY);
+			Engine::GetModule<IMouse>().Update(mouseWheel);
+			s_camera->Update(0.0167f);
 
 			// レンダリング開始
 			static float clearColor[4] = { 0.529411793f, 0.807843208f, 0.921568692f, 1.f }; // 背景色を設定
@@ -258,35 +262,32 @@ namespace sora
 			s_graphics->GetDC()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			s_graphics->GetDC()->VSSetConstantBuffers(0, 1, gConstantBuffer.GetAddressOf());
 
+			// ビュー行列を取得
+			viewMatrix = s_camera->GetViewMatrix();
+
 			// オブジェクトの描画
-			cb.mvp = modelMatrix * viewMatrix * projectionMatrix;
-			cb.mvp = cb.mvp.Transpose();
+			cb.mvp = viewMatrix * projectionMatrix;
 			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 			model->Draw(s_graphics->GetDC());
 			cb.mvp = planeMatrix * viewMatrix * projectionMatrix;
-			cb.mvp = cb.mvp.Transpose();
 			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 			plane->Draw(s_graphics->GetDC());
 
 			s_gui->Begin();
 			{
-				static bool wireframe = false;
-				if (ImGui::Checkbox("Wireframe", &wireframe))
+				ImGui::Begin("Settings");
 				{
-					wireframe ? s_graphics->SetWireframeMode() : s_graphics->SetSolidMode();
-				}
+					static bool wireframe = false;
+					if (ImGui::Checkbox("Wireframe", &wireframe))
+					{
+						wireframe ? s_graphics->SetWireframeMode() : s_graphics->SetSolidMode();
+					}
 
-				ImGui::ColorEdit4("Clear Color", clearColor);
-
-				static float cameraScale = 1.0f;
-				if (ImGui::InputFloat("Camera Scale", &cameraScale))
-				{
-					projectionMatrix = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4, (float)WIDTH / HEIGHT, cameraScale, cameraScale * 1000.0f);
+					ImGui::ColorEdit4("Clear Color", clearColor);
 				}
-				ImGui::SliderAngle("Model Rotation Y", &modelRotationY, 0.0f, 360.0f);
-				ImGui::SliderFloat("Camera Position Y", &y, 0.0f, cameraScale * 20.0f);
-				ImGui::SliderFloat("Camera Radius", &radius, 1.0, cameraScale * 20.0f);
-				ImGui::SliderFloat3("Camera Focus", &focus.x, 0.0f, cameraScale * 20.0f);
+				ImGui::End();
+
+				s_gui->CameraSetting(*s_camera.get());
 			}
 			s_gui->End();
 

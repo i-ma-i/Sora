@@ -114,8 +114,8 @@ namespace sora
 			{
 				D3D11_RASTERIZER_DESC rasterizerDesc = {};
 				rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-				rasterizerDesc.CullMode = D3D11_CULL_BACK; // バックフェイスカリングを有効にする
-				rasterizerDesc.FrontCounterClockwise = true; // 反時計回りがフロントフェイス
+				rasterizerDesc.CullMode = D3D11_CULL_NONE; // バックフェイスカリングを有効にする
+				rasterizerDesc.FrontCounterClockwise = false; // 時計回りがフロントフェイス(左手座標系)
 				rasterizerDesc.DepthBias = 0;
 				rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 				rasterizerDesc.DepthBiasClamp = 0.0f;

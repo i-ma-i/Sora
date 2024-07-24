@@ -20,7 +20,7 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
     PS_INPUT output;
-    output.Pos = mul(float4(input.Pos, 1.0f), mvp);
+    output.Pos = mul(mvp, float4(input.Pos, 1.0f));
     output.Normal = input.Normal;
     output.TexCoord = input.TexCoord;
     return output;

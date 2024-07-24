@@ -59,6 +59,7 @@ namespace sora
 			return it->second;
 		}
 		__debugbreak();
+		return "";
 	}
 
 	int Env::GetInt(std::string_view key)
@@ -69,6 +70,7 @@ namespace sora
 			return std::stoi(it->second);
 		}
 		__debugbreak();
+		return 0;
 	}
 
 	float Env::GetFloat(std::string_view key)
@@ -79,5 +81,6 @@ namespace sora
 			return std::stof(it->second);
 		}
 		__debugbreak();
+		return 0;
 	}
 }
