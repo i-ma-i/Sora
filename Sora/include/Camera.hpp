@@ -5,35 +5,52 @@ namespace sora
 	class Camera
 	{
 	public:
-		Camera(
-			DirectX::SimpleMath::Vector3 position = { 0.0f, 5.0f, -10.0f },
-			float yaw = 0.0f,
-			float pitch = 0.0f,
-			float moveSpeed = 10.0f,
-			float rotateSpeed = 2.0f,
-			float zoomSpeed = 10.0f
-		)
-		: m_position(position)
-		, m_yaw(yaw)
-		, m_pitch(pitch)
-		, m_moveSpeed(moveSpeed)
-		, m_rotateSpeed(rotateSpeed)
-		, m_zoomSpeed(zoomSpeed)
-		{}
+		struct Config
+		{
+			DirectX::SimpleMath::Vector3 position = { 0.0f, 5.0f, -10.0f };
+			float yawRad = 0.0f;
+			float pitchRad = -0.5f;
+			float moveSpeed = 15.0f;
+			float rotateSpeedRad = 0.05f;
+			float zoomSpeed = 20.0f;
+			float fov = DirectX::XM_PIDIV4;
+			float aspectRate = 16.0f / 9.0f;
+			float nearZ = 1.0f;
+			float farZ = 1000.0f;
+		};
 
-		DirectX::SimpleMath::Matrix GetViewMatrix() const;
+	public:
+		Camera(const Config& config = Config())
+		: m_position(config.position)
+		, m_yawRad(config.yawRad)
+		, m_pitchRad(config.pitchRad)
+		, m_moveSpeed(config.moveSpeed)
+		, m_rotateSpeedRad(config.rotateSpeedRad)
+		, m_zoomSpeed(config.zoomSpeed)
+		{
+			CreatePerspective(config.fov, config.aspectRate, config.nearZ, config.farZ);
+		}
+
+		DirectX::SimpleMath::Matrix GetView() const;
+		DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
+		DirectX::SimpleMath::Matrix GetViewProjection() const { return GetView() * m_projection;}
+		DirectX::SimpleMath::Matrix CreatePerspective(float fov, float aspectRate, float nearZ, float farZ);
+		DirectX::SimpleMath::Matrix CreateOrthographic(float width, float height, float nearZ, float farZ);
 
 		void Update(float deltaTime);
-		float GetYaw() const { return m_yaw; }
-		float GetPitch() const { return m_pitch; }
+
 	private:
 		DirectX::SimpleMath::Vector3 GetForward() const;
 
-	public:
-		float m_moveSpeed, m_rotateSpeed, m_zoomSpeed;
-
 	private:
 		DirectX::SimpleMath::Vector3 m_position;
-		float m_yaw, m_pitch;
+		float m_yawRad, m_pitchRad;
+		float m_moveSpeed, m_rotateSpeedRad, m_zoomSpeed;
+
+	private:
+		DirectX::SimpleMath::Matrix m_projection;
+
+	private:
+		friend class GUI;
 	};
 }

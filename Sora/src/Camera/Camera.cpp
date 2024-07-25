@@ -21,9 +21,23 @@ namespace
 
 namespace sora
 {
-	DirectX::SimpleMath::Matrix Camera::GetViewMatrix() const
+	DirectX::SimpleMath::Matrix Camera::GetView() const
 	{
 		return XMMatrixLookToLH(m_position, GetForward(), Vector3::Up);
+	}
+
+	DirectX::SimpleMath::Matrix Camera::CreatePerspective(float fov, float aspectRate, float nearZ, float farZ)
+	{
+		XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovLH(fov, aspectRate, nearZ, farZ);
+		m_projection = perspectiveMatrix;
+		return m_projection;
+	}
+
+	DirectX::SimpleMath::Matrix Camera::CreateOrthographic(float width, float height, float nearZ, float farZ)
+	{
+		XMMATRIX orthographicMatrix = XMMatrixOrthographicLH(width, height, nearZ, farZ);
+		m_projection = orthographicMatrix;
+		return m_projection;
 	}
 
 	void Camera::Update(float deltaTime)
@@ -34,26 +48,26 @@ namespace sora
 		const Vector2 mouseDelta = Vector2((float)s_mouseInput.DeltaX(), (float)s_mouseInput.DeltaY()) * deltaTime;
 
 		// マウスホイールでズームする。
-		m_position -= forward * (float)s_mouseInput.WheelValue() * m_zoomSpeed * deltaTime;
+		m_position += forward * (float)s_mouseInput.WheelValue() * m_zoomSpeed * deltaTime;
 
 		// マウス中ボタンを押している間、カメラをパン移動する。
 		if (s_mouseInput.MiddlePressed())
 		{
-			m_position += right * mouseDelta.x * deltaMove;
-			m_position += Vector3::Up * mouseDelta.y * deltaMove;
+			m_position += right * mouseDelta.x * deltaMove * 5.0f;
+			m_position += Vector3::Down * mouseDelta.y * deltaMove * 5.0f;
 		}
 
 		if (s_mouseInput.RightPressed() == false)
 			return;
 
 		// マウスの右ボタンを押している間、カメラを回転させる。
-		m_yaw += mouseDelta.x * m_rotateSpeed;
-		m_pitch += mouseDelta.y * m_rotateSpeed;
-		m_pitch = std::clamp(m_pitch, -90.0f, 90.0f);
+		m_yawRad += mouseDelta.x * m_rotateSpeedRad;
+		m_pitchRad -= mouseDelta.y * m_rotateSpeedRad;
+		m_pitchRad = std::clamp(m_pitchRad, -XM_PIDIV2, XM_PIDIV2);
 
 		// マウスの右ボタンを押している間,カメラを移動させる。
-		if (s_inputForward.Pressed()) m_position += forward * -deltaMove;
-		if (s_inputBackward.Pressed()) m_position -= forward * -deltaMove;
+		if (s_inputForward.Pressed()) m_position += forward * deltaMove;
+		if (s_inputBackward.Pressed()) m_position -= forward * deltaMove;
 		if (s_inputLeft.Pressed()) m_position -= right * deltaMove;
 		if (s_inputRight.Pressed()) m_position += right * deltaMove;
 		if (s_inputUp.Pressed()) m_position += Vector3::Up * deltaMove;
@@ -62,12 +76,10 @@ namespace sora
 
 	DirectX::SimpleMath::Vector3 Camera::GetForward() const
 	{
-		const float yawRad = XMConvertToRadians(m_yaw);
-		const float pitchRad = XMConvertToRadians(m_pitch);
 		return {
-			cosf(pitchRad) * cosf(yawRad) ,
-			sinf(pitchRad),
-			cosf(pitchRad) * sinf(yawRad)
+			cosf(m_pitchRad) * sinf(m_yawRad),
+			sinf(m_pitchRad),
+			cosf(m_pitchRad) * cosf(m_yawRad)
 		};
 	}
 }

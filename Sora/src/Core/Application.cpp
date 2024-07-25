@@ -42,9 +42,6 @@ namespace sora
 		std::unique_ptr<Model> model;
 		std::unique_ptr<Quad> plane;
 
-		static int WIDTH;
-		static int HEIGHT;
-
 		// 定数バッファ
 		ComPtr<ID3D11Buffer> gConstantBuffer;
 
@@ -74,10 +71,6 @@ namespace sora
 
 			return true;
 		}
-
-		DirectX::SimpleMath::Matrix planeMatrix = DirectX::SimpleMath::Matrix::CreateTranslation({ 0, -1.0, 0 });
-		DirectX::SimpleMath::Matrix viewMatrix;
-		DirectX::SimpleMath::Matrix projectionMatrix;
 
 		// シェーダーオブジェクト
 		ComPtr<ID3D11VertexShader> gVertexShader;
@@ -132,15 +125,11 @@ namespace sora
 				Env::GetString("logger.consolePattern")
 			});
 
-			// エンジンを作成する。
-			s_engine = std::make_unique<Engine>();
-
 			// アプリケーションを作成する。
 			LOG_INFO("Creating...");
 
-			// ウィンドウサイズを環境変数から取得する。
-			WIDTH = Env::GetInt("window.width");
-			HEIGHT = Env::GetInt("window.height");
+			// エンジンを作成する。
+			s_engine = std::make_unique<Engine>();
 
 			// SDLを初期化する。
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -153,7 +142,7 @@ namespace sora
 			s_window = SDL_CreateWindow(
 				Env::GetString("window.title").c_str(),
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-				WIDTH, HEIGHT,
+				Env::GetInt("window.width"), Env::GetInt("window.height"),
 				SDL_WINDOW_ALLOW_HIGHDPI
 			);
 			if (s_window == nullptr)
@@ -169,15 +158,22 @@ namespace sora
 			hWnd = (HWND)wmInfo.info.win.window;
 
 			s_graphics = std::make_unique<Graphics>(hWnd);
-			s_camera = std::make_unique<Camera>(
-				DirectX::SimpleMath::Vector3(
-					Env::GetFloat("camera.position[0]"),
-					Env::GetFloat("camera.position[1]"),
-					Env::GetFloat("camera.position[2]")
-				)
-				, Env::GetFloat("camera.yaw")
-				, Env::GetFloat("camera.pitch")
-			);
+
+			// カメラを作成する。
+			Camera::Config config;
+			config.position = {
+				Env::GetFloat("camera.position[0]"),
+				Env::GetFloat("camera.position[1]"),
+				Env::GetFloat("camera.position[2]")
+			};
+			config.yawRad = Env::GetFloat("camera.yaw");
+			config.pitchRad = Env::GetFloat("camera.pitch");
+			config.moveSpeed = Env::GetFloat("camera.moveSpeed");
+			config.rotateSpeedRad = Env::GetFloat("camera.rotateSpeed");
+			config.zoomSpeed = Env::GetFloat("camera.zoomSpeed");
+			config.nearZ = Env::GetFloat("camera.nearZ");
+			config.farZ = Env::GetFloat("camera.farZ");
+			s_camera = std::make_unique<Camera>(config);
 
 			if (!InitShaders()) {
 				LOG_ERROR("Failed to initialize shaders.");
@@ -191,9 +187,6 @@ namespace sora
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window, s_graphics->GetDevice(), s_graphics->GetDC());
-
-			// プロジェクション行列を設定
-			projectionMatrix = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4, (float)WIDTH / HEIGHT, 1.0f, 1000.0f);
 
 			// アプリケーションの作成が正常に完了。
 			LOG_INFO("Creation completed successfully.");
@@ -262,14 +255,13 @@ namespace sora
 			s_graphics->GetDC()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			s_graphics->GetDC()->VSSetConstantBuffers(0, 1, gConstantBuffer.GetAddressOf());
 
-			// ビュー行列を取得
-			viewMatrix = s_camera->GetViewMatrix();
+			// カメラ行列を取得する。
+			const auto viewProjection = s_camera->GetViewProjection();
 
 			// オブジェクトの描画
-			cb.mvp = viewMatrix * projectionMatrix;
+			cb.mvp = viewProjection;
 			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 			model->Draw(s_graphics->GetDC());
-			cb.mvp = planeMatrix * viewMatrix * projectionMatrix;
 			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 			plane->Draw(s_graphics->GetDC());
 
@@ -286,8 +278,6 @@ namespace sora
 					ImGui::ColorEdit4("Clear Color", clearColor);
 				}
 				ImGui::End();
-
-				s_gui->CameraSetting(*s_camera.get());
 			}
 			s_gui->End();
 

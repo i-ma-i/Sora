@@ -11,10 +11,10 @@ namespace sora
 			// 頂点データを作成する。
 			DirectX::VertexPositionNormalTexture vertices[] =
 			{
-				{ Vector3(-10.0f, 0.0f, -10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 1.0f) },
-				{ Vector3(10.0f, 0.0f, -10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f) },
-				{ Vector3(10.0f, 0.0f, 10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 0.0f) },
-				{ Vector3(-10.0f, 0.0f, 10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
+				{ Vector3(-10.0f, -1.0f, -10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 1.0f) },
+				{ Vector3( 10.0f, -1.0f, -10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f) },
+				{ Vector3( 10.0f, -1.0f,  10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 0.0f) },
+				{ Vector3(-10.0f, -1.0f,  10.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f) },
 			};
 			m_stride = sizeof(vertices[0]);
 

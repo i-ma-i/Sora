@@ -88,14 +88,19 @@ namespace sora
 			ImGui::End();
 		}
 
-		void CameraSetting(Camera& camera) const
+		void CameraConfig(Camera& camera) const
 		{
 			ImGui::Begin("Camera Setting");
 			{
+				ImGui::SeparatorText("Attitude");
+				ImGui::InputFloat3("Position", &camera.m_position.x);
+				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", camera.GetForward().x, camera.GetForward().y, camera.GetForward().z);
+				ImGui::SliderAngle("Yaw", &camera.m_yawRad, 0.0f, 360.0f);
+				ImGui::SliderAngle("Pitch", &camera.m_pitchRad, -90.0f, 90.0f);
+
+				ImGui::SeparatorText("Speed");
 				ImGui::SliderFloat("Move Speed", &camera.m_moveSpeed, 1.0f, 50.0f);
-
-				ImGui::SliderFloat("Rotate Speed", &camera.m_rotateSpeed, 0.1, 5.0f);
-
+				ImGui::SliderFloat("Rotate Speed Radian", &camera.m_rotateSpeedRad, 0.01f, 0.1f, "%.6f", ImGuiSliderFlags_NoRoundToFormat);
 				ImGui::SliderFloat("Zoom Speed", &camera.m_zoomSpeed, 1.0f, 100.0f);
 			}
 			ImGui::End();
