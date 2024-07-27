@@ -5,30 +5,24 @@ namespace sora
 	class Camera
 	{
 	public:
-		struct Config
+		Camera()
+		: m_position(DirectX::SimpleMath::Vector3(
+			Config::GetFloat("camera.position[0]"),
+			Config::GetFloat("camera.position[1]"),
+			Config::GetFloat("camera.position[2]")
+		))
+		, m_yawRad(Config::GetFloat("camera.yaw"))
+		, m_pitchRad(Config::GetFloat("camera.pitch"))
+		, m_moveSpeed(Config::GetFloat("camera.moveSpeed"))
+		, m_rotateSpeedRad(Config::GetFloat("camera.rotateSpeed"))
+		, m_zoomSpeed(Config::GetFloat("camera.zoomSpeed"))
 		{
-			DirectX::SimpleMath::Vector3 position = { 0.0f, 5.0f, -10.0f };
-			float yawRad = 0.0f;
-			float pitchRad = -0.5f;
-			float moveSpeed = 15.0f;
-			float rotateSpeedRad = 0.05f;
-			float zoomSpeed = 20.0f;
-			float fov = DirectX::XM_PIDIV4;
-			float aspectRate = 16.0f / 9.0f;
-			float nearZ = 1.0f;
-			float farZ = 1000.0f;
-		};
-
-	public:
-		Camera(const Config& config = Config())
-		: m_position(config.position)
-		, m_yawRad(config.yawRad)
-		, m_pitchRad(config.pitchRad)
-		, m_moveSpeed(config.moveSpeed)
-		, m_rotateSpeedRad(config.rotateSpeedRad)
-		, m_zoomSpeed(config.zoomSpeed)
-		{
-			CreatePerspective(config.fov, config.aspectRate, config.nearZ, config.farZ);
+			CreatePerspective(
+				DirectX::XM_PIDIV4,
+				16.0f / 9.0f,
+				Config::GetFloat("camera.nearZ"),
+				Config::GetFloat("camera.farZ")
+			);
 		}
 
 		DirectX::SimpleMath::Matrix GetView() const;
