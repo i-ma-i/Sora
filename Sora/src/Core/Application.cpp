@@ -52,7 +52,8 @@ namespace sora
 		// 定数バッファの作成
 		struct ConstantBuffer
 		{
-			DirectX::SimpleMath::Matrix mvp;
+			DirectX::SimpleMath::Matrix World;
+			DirectX::SimpleMath::Matrix WVP;
 		};
 
 		ConstantBuffer cb;
@@ -109,7 +110,7 @@ namespace sora
 
 
 			// imguiを初期化する。
-			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics->GetDevice(), s_graphics->GetDC());
+			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get());
 
 			// アプリケーションの作成が正常に完了。
 			LOG_INFO("Creation completed successfully.");
@@ -202,8 +203,8 @@ namespace sora
 				}
 			}
 
-			Engine::GetModule<IKeyboard>().Update();
-			Engine::GetModule<IMouse>().Update(mouseWheel);
+			Engine::GetModule<IKeyboard>()->Update();
+			Engine::GetModule<IMouse>()->Update(mouseWheel);
 			s_camera->Update(0.0167f);
 
 			// レンダリング開始
@@ -218,7 +219,7 @@ namespace sora
 
 			// オブジェクトの描画
 			{
-				cb.mvp = viewProjection;
+				cb.WVP = viewProjection;
 				s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
 				model->Draw(s_graphics->GetDC());
 				s_graphics->GetDC()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
@@ -226,19 +227,8 @@ namespace sora
 				plane->Draw(s_graphics->GetDC());
 			}
 
-			s_gui->Begin();
-			{
-				ImGui::Begin("Graphics Config");
-				{
-					static bool wireframe = false;
-					ImGui::Checkbox("Wireframe", &wireframe);
-					wireframe ? s_graphics->SetWireframeMode() : s_graphics->SetSolidMode();
-				}
-				ImGui::End();
-
-				s_gui->CameraConfig(*s_camera);
-			}
-			s_gui->End();
+			// GUIを描画する。
+			s_gui->Draw();
 
 			// レンダリング終了
 			s_graphics->End();

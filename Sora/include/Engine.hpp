@@ -11,9 +11,9 @@ namespace sora
 
 		template<class Module>
 		[[nodiscard]]
-		static auto& GetModule() noexcept
+		static auto* GetModule() noexcept
 		{
-			return *(std::get<std::unique_ptr<Module>>(s_engine->m_modules).get());
+			return std::get<std::unique_ptr<Module>>(s_engine->m_modules).get();
 		}
 
 	private:

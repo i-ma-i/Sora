@@ -1,6 +1,7 @@
 cbuffer ConstantBuffer : register(b0)
 {
-    matrix MVP;
+    matrix World;
+    matrix WVP;
 };
 
 struct VS_INPUT
@@ -20,7 +21,7 @@ struct PS_INPUT
 PS_INPUT main(VS_INPUT input)
 {
     PS_INPUT output;
-    output.Pos = mul(MVP, float4(input.Pos, 1.0f));
+    output.Pos = mul(WVP, float4(input.Pos, 1.0f));
     output.Normal = input.Normal;
     output.TexCoord = input.TexCoord;
     return output;

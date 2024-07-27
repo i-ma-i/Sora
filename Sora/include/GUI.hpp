@@ -5,22 +5,38 @@
 
 #include <SDL2/SDL.h>
 
-#include "MouseInput.hpp"
+#include "Engine.hpp"
+#include "Window.hpp"
+#include "Graphics.hpp"
 #include "Camera.hpp"
+#include "MouseInput.hpp"
 
 namespace sora
 {
-//#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	class GUI
 	{
+	private:
+		Window* m_window;
+		Graphics* m_graphics;
+		Camera* m_camera;
+
+	private:
+		bool m_openMouseCapture = false;
+		bool m_openGraphicsConfig = false;
+		bool m_openCameraConfig = false;
+
 	public:
-		GUI(Window* window, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+		GUI(Window* window, Graphics* graphics, Camera* camera)
+			: m_window(window)
+			, m_graphics(graphics)
+			, m_camera(camera)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
 
-			ImGui_ImplSDL2_InitForD3D(window->m_window);
-			ImGui_ImplDX11_Init(device, deviceContext);
+			ImGui_ImplSDL2_InitForD3D(m_window->m_window);
+			ImGui_ImplDX11_Init(m_graphics->GetDevice(), m_graphics->GetDC());
 		}
 		~GUI()
 		{
@@ -34,22 +50,43 @@ namespace sora
 			ImGui_ImplSDL2_ProcessEvent(event);
 		}
 
-		void Begin() const
+		void Draw()
 		{
-			// Start the Dear ImGui frame
 			ImGui_ImplDX11_NewFrame();
 			ImGui_ImplSDL2_NewFrame();
 			ImGui::NewFrame();
-		}
-		void End() const
-		{
-			// Rendering
+			{
+				MenuBar();
+				MouseCapture();
+				GraphicsConfig();
+				CameraConfig();
+			}
 			ImGui::Render();
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 		}
 
+	private:
+		void MenuBar()
+		{
+			if (ImGui::BeginMainMenuBar())
+			{
+				if (ImGui::BeginMenu("Config"))
+				{
+					if (ImGui::MenuItem("Mouse Capture", nullptr, m_openMouseCapture)) m_openMouseCapture = !m_openMouseCapture;
+					if (ImGui::MenuItem("Graphics Config", nullptr, m_openGraphicsConfig)) m_openGraphicsConfig = !m_openGraphicsConfig;
+					if (ImGui::MenuItem("Camera Config", nullptr, m_openCameraConfig)) m_openCameraConfig = !m_openCameraConfig;
+
+					ImGui::EndMenu();
+				}
+				
+				ImGui::EndMainMenuBar();
+			}
+		}
+
 		void MouseCapture() const
 		{
+			if (!m_openMouseCapture) return;
+
 			MouseInput mouse;
 			ImGui::Begin("Mouse Capture");
 			{
@@ -82,41 +119,49 @@ namespace sora
 			ImGui::End();
 		}
 
-		void CameraConfig(Camera& camera) const
+		void GraphicsConfig() const
 		{
+			if (!m_openGraphicsConfig) return;
+
+			ImGui::Begin("Graphics Config");
+			{
+				static bool wireframe = false;
+				ImGui::Checkbox("Wireframe", &wireframe);
+				wireframe ? m_graphics->SetWireframeMode() : m_graphics->SetSolidMode();
+			}
+			ImGui::End();
+		}
+
+		void CameraConfig() const
+		{
+			if (!m_openCameraConfig) return;
+
 			ImGui::Begin("Camera Setting");
 			{
 				ImGui::SeparatorText("Attitude");
-				ImGui::InputFloat3("Position", &camera.m_position.x);
-				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", camera.GetForward().x, camera.GetForward().y, camera.GetForward().z);
-				ImGui::SliderAngle("Yaw", &camera.m_yawRad, 0.0f, 360.0f);
-				ImGui::SliderAngle("Pitch", &camera.m_pitchRad, -90.0f, 90.0f);
+				ImGui::InputFloat3("Position", &m_camera->m_position.x);
+				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", m_camera->GetForward().x, m_camera->GetForward().y, m_camera->GetForward().z);
+				ImGui::SliderAngle("Yaw", &m_camera->m_yawRad, 0.0f, 360.0f);
+				ImGui::SliderAngle("Pitch", &m_camera->m_pitchRad, -90.0f, 90.0f);
 
 				ImGui::SeparatorText("Speed");
-				ImGui::SliderFloat("Move Speed", &camera.m_moveSpeed, 1.0f, 200.0f);
-				ImGui::SliderFloat("Rotate Speed Radian", &camera.m_rotateSpeedRad, 0.01f, 0.1f, "%.6f", ImGuiSliderFlags_NoRoundToFormat);
-				ImGui::SliderFloat("Zoom Speed", &camera.m_zoomSpeed, 1.0f, 200.0f);
+				ImGui::SliderFloat("Move Speed", &m_camera->m_moveSpeed, 1.0f, 200.0f);
+				ImGui::SliderFloat("Rotate Speed Radian", &m_camera->m_rotateSpeedRad, 0.01f, 0.1f, "%.6f", ImGuiSliderFlags_NoRoundToFormat);
+				ImGui::SliderFloat("Zoom Speed", &m_camera->m_zoomSpeed, 1.0f, 200.0f);
 			}
 			ImGui::End();
 		}
 	};
-//#else
-//	class GUI
-//	{
-//	public:
-//		GUI(SDL_Window* window, ID3D11Device* device, ID3D11DeviceContext* deviceContext) {}
-//		~GUI() {}
-//
-//		void ProcessEvent(const SDL_Event* event) const {}
-//
-//		void Begin() const {}
-//		void End() const {}
-//
-//		void MenuBar() const {}
-//
-//		void MouseCapture() const {}
-//
-//		void CameraConfig(Camera& camera) const {}
-//	};
-//#endif
+#else
+	class GUI
+	{
+	public:
+		GUI(Window* window, Graphics* graphics, Camera* camera) {}
+		~GUI() {}
+
+		void ProcessEvent(const SDL_Event* event) const {}
+
+		void Draw() {}
+	};
+#endif
 }

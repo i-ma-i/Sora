@@ -43,22 +43,22 @@ namespace sora
 	}
 	int MouseInput::PositionX() const
 	{
-		return Engine::GetModule<IMouse>().PositionX();
+		return Engine::GetModule<IMouse>()->PositionX();
 	}
 	int MouseInput::PositionY() const
 	{
-		return Engine::GetModule<IMouse>().PositionY();
+		return Engine::GetModule<IMouse>()->PositionY();
 	}
 	int MouseInput::DeltaX() const
 	{
-		return Engine::GetModule<IMouse>().DeltaX();
+		return Engine::GetModule<IMouse>()->DeltaX();
 	}
 	int MouseInput::DeltaY() const
 	{
-		return Engine::GetModule<IMouse>().DeltaY();
+		return Engine::GetModule<IMouse>()->DeltaY();
 	}
 	int MouseInput::WheelValue() const
 	{
-		return Engine::GetModule<IMouse>().WheelValue();
+		return Engine::GetModule<IMouse>()->WheelValue();
 	}
 }
