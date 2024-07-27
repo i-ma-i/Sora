@@ -10,6 +10,7 @@
 ## やらないこと
 - マルチプラットフォーム
 - マルチスレッド
+- HDR
 - アニメーション
 - ネットワーク通信
 - 日本語対応
@@ -30,8 +31,17 @@
 
 
 ## TODO
-- シェーダー ライブラリのパッケージ化
-- [非同期のアセット読み込み](https://learn.microsoft.com/ja-jp/windows/uwp/gaming/load-a-game-asset)
+- ImGuizmo
+- アセット管理
+- 大気散乱(Atmospheric Scattering)
+- [DX9シミュレーション](https://hexadrive.jp/lab/demo/385/)
+- [A Physically-Based Nightsky Model](https://graphics.stanford.edu/~henrik/papers/nightsky/)
+- [Precomputed Atmospheric Scattering](https://ebruneton.github.io/precomputed_atmospheric_scattering/)
+- [エルデンリングの大気表現](https://gamemakers.jp/article/2022_10_04_20087/)
+- [GPU Games2](https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-16-accurate-atmospheric-scattering)
+
+[- DirectXTK チュートリアル](https://github.com/microsoft/DirectXTK/wiki)
+[- GPU Games2](https://developer.nvidia.com/gpugems/gpugems2/copyright)
 - プロファイリング
 - DirectMesh
 - FastNoise

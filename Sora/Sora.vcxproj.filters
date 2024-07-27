@@ -98,9 +98,6 @@
     <ClInclude Include="include\Input.hpp">
       <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\InputDevice.hpp">
-      <Filter>ヘッダー ファイル\Input</Filter>
-    </ClInclude>
     <ClInclude Include="include\Keyboard.hpp">
       <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
@@ -137,11 +134,18 @@
     <ClInclude Include="include\Camera.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="include\MouseState.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="include\MouseInput.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="include\VertexShader.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PixelShader.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="asset\shader\BasicPS.hlsl" />
+    <FxCompile Include="asset\shader\BasicVS.hlsl" />
   </ItemGroup>
 </Project>

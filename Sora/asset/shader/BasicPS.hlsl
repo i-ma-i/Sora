@@ -8,7 +8,7 @@ struct PS_INPUT
     float2 TexCoord : TEXCOORD0;
 };
 
-float4 PS(PS_INPUT input) : SV_Target
+float4 main(PS_INPUT input) : SV_Target
 {
     return txDiffuse.Sample(samLinear, input.TexCoord);
 }

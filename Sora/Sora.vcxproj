@@ -182,7 +182,7 @@
     <ClInclude Include="include\Graphics.hpp" />
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />
-    <ClInclude Include="include\MouseState.hpp" />
+    <ClInclude Include="include\PixelShader.hpp" />
     <ClInclude Include="include\Primitive.hpp" />
     <ClInclude Include="include\ShaderLoader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
@@ -191,11 +191,29 @@
     <ClInclude Include="include\GUI.hpp" />
     <ClInclude Include="include\IMouse.hpp" />
     <ClInclude Include="include\Input.hpp" />
-    <ClInclude Include="include\InputDevice.hpp" />
     <ClInclude Include="include\Keyboard.hpp" />
     <ClInclude Include="include\Logger.hpp" />
     <ClInclude Include="include\Mouse.hpp" />
+    <ClInclude Include="include\VertexShader.hpp" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="asset\shader\BasicPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\asset\shader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\asset\shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="asset\shader\BasicVS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)asset\shader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)asset\shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

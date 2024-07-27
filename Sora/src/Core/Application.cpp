@@ -11,6 +11,8 @@
 #include "Model.hpp"
 #include "Primitive.hpp"
 #include "Camera.hpp"
+#include "VertexShader.hpp"
+#include "PixelShader.hpp"
 
 #include <magic_enum.hpp>
 
@@ -39,8 +41,11 @@ namespace sora
 		std::unique_ptr<Camera> s_camera;
 		HWND hWnd;
 		SDL_Window* s_window = nullptr;
+		std::unique_ptr<VertexShader> s_vertexShader;
+		std::unique_ptr<PixelShader> s_pixelShader;
 		std::unique_ptr<Model> model;
 		std::unique_ptr<Quad> plane;
+		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		// 定数バッファ
 		ComPtr<ID3D11Buffer> gConstantBuffer;
@@ -71,49 +76,6 @@ namespace sora
 
 			return true;
 		}
-
-		// シェーダーオブジェクト
-		ComPtr<ID3D11VertexShader> gVertexShader;
-		ComPtr<ID3D11PixelShader> gPixelShader;
-		ComPtr<ID3D11InputLayout> gInputLayout;
-
-		// シェーダーの初期化
-		bool InitShaders()
-		{
-			// シェーダーデータを作成
-			ComPtr<ID3DBlob> vsBlob = ShaderLoader::CompileHLSLFromFile(Env::GetString("vertexShader"), ShaderStage::Vertex, "VS");
-			ComPtr<ID3DBlob> psBlob = ShaderLoader::CompileHLSLFromFile(Env::GetString("pixelShader"), ShaderStage::Pixel, "PS");
-
-			// シェーダーオブジェクトを作成
-			auto hr = s_graphics->GetDevice()->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, gVertexShader.GetAddressOf());
-			if (FAILED(hr))
-			{
-				LOG_ERROR("Failed to create vertex shader. HRESULT: {:#X}", hr);
-				return false;
-			}
-
-			hr = s_graphics->GetDevice()->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, gPixelShader.GetAddressOf());
-			if (FAILED(hr))
-			{
-				LOG_ERROR("Failed to create pixel shader. HRESULT: {:#X}", hr);
-				return false;
-			}
-
-			// インプットレイアウトを作成
-			hr = s_graphics->GetDevice()->CreateInputLayout(VertexPositionNormalTexture::InputElements, VertexPositionNormalTexture::InputElementCount, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), gInputLayout.GetAddressOf());
-			if (FAILED(hr))
-			{
-				LOG_ERROR("Failed to create input layout. HRESULT: {:#X}", hr);
-				return false;
-			}
-
-			// シェーダーと入力レイアウトを設定
-			s_graphics->GetDC()->IASetInputLayout(gInputLayout.Get());
-			s_graphics->GetDC()->VSSetShader(gVertexShader.Get(), nullptr, 0);
-			s_graphics->GetDC()->PSSetShader(gPixelShader.Get(), nullptr, 0);
-
-			return true;
-		};
 
 		bool Create()
 		{
@@ -175,10 +137,12 @@ namespace sora
 			config.farZ = Env::GetFloat("camera.farZ");
 			s_camera = std::make_unique<Camera>(config);
 
-			if (!InitShaders()) {
-				LOG_ERROR("Failed to initialize shaders.");
-				return false;
-			}
+			// シェーダーを作成する。
+			s_vertexShader = std::make_unique<VertexShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Env::GetString("shader.basicVS"));
+			s_vertexShader->Bind(s_graphics->GetDC());
+			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Env::GetString("shader.basicPS"));
+			s_pixelShader->Bind(s_graphics->GetDC());
+
 			if (!CreateConstantBuffer()) {
 				LOG_ERROR("Failed to create constant buffer.");
 				return false;
@@ -195,6 +159,42 @@ namespace sora
 
 			model = std::make_unique<Model>(s_graphics->GetDevice(), s_graphics->GetDC(), Env::GetString("modelpath"));
 			plane = std::make_unique<Quad>(s_graphics->GetDevice());
+
+			// 無効なテクスチャを作成する。
+			{
+				D3D11_TEXTURE2D_DESC textureDesc = {};
+				textureDesc.Width = 1;
+				textureDesc.Height = 1;
+				textureDesc.MipLevels = 1;
+				textureDesc.ArraySize = 1;
+				textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				textureDesc.SampleDesc.Count = 1;
+				textureDesc.Usage = D3D11_USAGE_DEFAULT;
+				textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+				D3D11_SUBRESOURCE_DATA initData = {};
+				UINT32 pixelColor = 0xFFFC03F8; // ピンク色
+				initData.pSysMem = &pixelColor;
+				initData.SysMemPitch = sizeof(UINT32);
+
+				ComPtr<ID3D11Texture2D> texture;
+				if (FAILED(s_graphics->GetDevice()->CreateTexture2D(&textureDesc, &initData, texture.ReleaseAndGetAddressOf())))
+				{
+					__debugbreak();
+				}
+
+				D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+				srvDesc.Format = textureDesc.Format;
+				srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+				srvDesc.Texture2D.MostDetailedMip = 0;
+				srvDesc.Texture2D.MipLevels = 1;
+
+				// シェーダーリソースビューの作成
+				if (FAILED(s_graphics->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, s_invalidTexture.ReleaseAndGetAddressOf())))
+				{
+					__debugbreak();
+				}
+			}
 
 			return true;
 		}
@@ -248,7 +248,7 @@ namespace sora
 			s_camera->Update(0.0167f);
 
 			// レンダリング開始
-			static float clearColor[4] = { 0.529411793f, 0.807843208f, 0.921568692f, 1.f }; // 背景色を設定
+			static auto clearColor = DirectX::Colors::SkyBlue;
 			s_graphics->Begin(clearColor);
 
 			// プリミティブトポロジの設定
@@ -259,23 +259,38 @@ namespace sora
 			const auto viewProjection = s_camera->GetViewProjection();
 
 			// オブジェクトの描画
-			cb.mvp = viewProjection;
-			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-			model->Draw(s_graphics->GetDC());
-			s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-			plane->Draw(s_graphics->GetDC());
+			{
+				cb.mvp = viewProjection;
+				s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
+				model->Draw(s_graphics->GetDC());
+				s_graphics->GetDC()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
+				s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
+				plane->Draw(s_graphics->GetDC());
+			}
 
 			s_gui->Begin();
 			{
 				ImGui::Begin("Settings");
 				{
 					static bool wireframe = false;
+					
 					if (ImGui::Checkbox("Wireframe", &wireframe))
 					{
-						wireframe ? s_graphics->SetWireframeMode() : s_graphics->SetSolidMode();
+						static DirectX::XMVECTORF32 beforeColor;
+						if (wireframe)
+						{
+							beforeColor = clearColor;
+							clearColor = DirectX::Colors::Black;
+							s_graphics->SetWireframeMode();
+						}
+						else
+						{
+							clearColor = beforeColor;
+							s_graphics->SetSolidMode();
+						}
 					}
-
-					ImGui::ColorEdit4("Clear Color", clearColor);
+					if(!wireframe)
+						ImGui::ColorEdit4("Clear Color", clearColor.f);
 				}
 				ImGui::End();
 			}

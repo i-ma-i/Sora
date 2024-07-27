@@ -23,9 +23,9 @@ namespace sora
 
 	namespace ShaderLoader
 	{
-		ComPtr<ID3DBlob> LoadCSO(const std::filesystem::path& path)
+		ComPtr<ID3DBlob> LoadCSO(std::filesystem::path path)
 		{
-			LOG_INFO("Read shader from cso.  path[{}]", path.string());
+			LOG_INFO("Read shader from cso.  path[{}]", path.make_preferred().string());
 
 			ComPtr<ID3DBlob> binary;
 			if (FAILED(D3DReadFileToBlob(path.c_str(), &binary)))

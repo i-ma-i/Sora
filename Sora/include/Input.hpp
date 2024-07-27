@@ -1,5 +1,14 @@
 ﻿#pragma once
-#include "InputDevice.hpp"
+
+namespace sora
+{
+	enum class InputDevice
+	{
+		Undefined,
+		Keyboard,
+		Mouse,
+	};
+}
 
 namespace sora
 {

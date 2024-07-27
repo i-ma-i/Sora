@@ -1,6 +1,6 @@
 cbuffer ConstantBuffer : register(b0)
 {
-    matrix mvp; // Model-View-Projection çsóÒ
+    matrix MVP;
 };
 
 struct VS_INPUT
@@ -17,10 +17,10 @@ struct PS_INPUT
     float2 TexCoord : TEXCOORD0;
 };
 
-PS_INPUT VS(VS_INPUT input)
+PS_INPUT main(VS_INPUT input)
 {
     PS_INPUT output;
-    output.Pos = mul(mvp, float4(input.Pos, 1.0f));
+    output.Pos = mul(MVP, float4(input.Pos, 1.0f));
     output.Normal = input.Normal;
     output.TexCoord = input.TexCoord;
     return output;
