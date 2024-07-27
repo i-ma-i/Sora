@@ -1,4 +1,4 @@
-﻿#include "Env.hpp"
+﻿#include "Config.hpp"
 
 #pragma warning(push)
 #pragma warning(disable: 4251 4275)
@@ -34,9 +34,9 @@ namespace
 	}
 }
 
-namespace sora
+namespace sora::Config
 {
-	void Env::Create(std::filesystem::path filepath)
+	void Create(std::filesystem::path filepath)
 	{
 		// 最初にクリアしておく。
 		s_env.clear();
@@ -51,7 +51,7 @@ namespace sora
 		}
 	}
 
-	std::string Env::GetString(std::string_view key)
+	std::string GetString(std::string_view key)
 	{
 		auto it = s_env.find(key.data());
 		if (it != s_env.end())
@@ -62,7 +62,7 @@ namespace sora
 		return "";
 	}
 
-	int Env::GetInt(std::string_view key)
+	int GetInt(std::string_view key)
 	{
 		auto it = s_env.find(key.data());
 		if (it != s_env.end())
@@ -73,7 +73,7 @@ namespace sora
 		return 0;
 	}
 
-	float Env::GetFloat(std::string_view key)
+	float GetFloat(std::string_view key)
 	{
 		auto it = s_env.find(key.data());
 		if (it != s_env.end())

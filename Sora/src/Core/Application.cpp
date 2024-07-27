@@ -1,8 +1,9 @@
 ﻿#define TINYOBJLOADER_IMPLEMENTATION
 #include "Application.hpp"
-#include "Engine.hpp"
-#include "Env.hpp"
+#include "Config.hpp"
 #include "Logger.hpp"
+#include "Window.hpp"
+#include "Engine.hpp"
 #include "IKeyboard.hpp"
 #include "IMouse.hpp"
 #include "Graphics.hpp"
@@ -14,8 +15,6 @@
 #include "VertexShader.hpp"
 #include "PixelShader.hpp"
 
-#include <magic_enum.hpp>
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
@@ -26,6 +25,7 @@
 #pragma comment(lib, "version.lib")
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 
 using namespace DirectX;
 
@@ -35,12 +35,11 @@ namespace sora
 	{
 		bool s_initialized = false;
 		bool s_running = false;
+		std::unique_ptr<Window> s_window;
 		std::unique_ptr<Engine> s_engine;
 		std::unique_ptr<Graphics> s_graphics;
 		std::unique_ptr<GUI> s_gui;
 		std::unique_ptr<Camera> s_camera;
-		HWND hWnd;
-		SDL_Window* s_window = nullptr;
 		std::unique_ptr<VertexShader> s_vertexShader;
 		std::unique_ptr<PixelShader> s_pixelShader;
 		std::unique_ptr<Model> model;
@@ -79,18 +78,11 @@ namespace sora
 
 		bool Create()
 		{
-			// Loggerを作成する。
-			Logger::Setup({
-				std::filesystem::current_path() / Env::GetString("logger.filename"),
-				magic_enum::enum_cast<spdlog::level::level_enum>(Env::GetString("logger.level")).value(),
-				Env::GetString("logger.filePattern"),
-				Env::GetString("logger.consolePattern")
-			});
+			Config::Create(std::filesystem::current_path() / "asset/config.yaml");
+			Logger::Create();
 
-			// アプリケーションを作成する。
 			LOG_INFO("Creating...");
 
-			// エンジンを作成する。
 			s_engine = std::make_unique<Engine>();
 
 			// SDLを初期化する。
@@ -100,47 +92,14 @@ namespace sora
 				return false;
 			}
 
-			// ウィンドウを作成する。
-			s_window = SDL_CreateWindow(
-				Env::GetString("window.title").c_str(),
-				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-				Env::GetInt("window.width"), Env::GetInt("window.height"),
-				SDL_WINDOW_ALLOW_HIGHDPI
-			);
-			if (s_window == nullptr)
-			{
-				LOG_ERROR("[SDL] SDL_CreateWindow Error.  error: {}", SDL_GetError());
-				return false;
-			}
-
-			// SDLウィンドウからハンドルを取得
-			SDL_SysWMinfo wmInfo;
-			SDL_VERSION(&wmInfo.version);
-			SDL_GetWindowWMInfo(s_window, &wmInfo);
-			hWnd = (HWND)wmInfo.info.win.window;
-
-			s_graphics = std::make_unique<Graphics>(hWnd);
-
-			// カメラを作成する。
-			Camera::Config config;
-			config.position = {
-				Env::GetFloat("camera.position[0]"),
-				Env::GetFloat("camera.position[1]"),
-				Env::GetFloat("camera.position[2]")
-			};
-			config.yawRad = Env::GetFloat("camera.yaw");
-			config.pitchRad = Env::GetFloat("camera.pitch");
-			config.moveSpeed = Env::GetFloat("camera.moveSpeed");
-			config.rotateSpeedRad = Env::GetFloat("camera.rotateSpeed");
-			config.zoomSpeed = Env::GetFloat("camera.zoomSpeed");
-			config.nearZ = Env::GetFloat("camera.nearZ");
-			config.farZ = Env::GetFloat("camera.farZ");
-			s_camera = std::make_unique<Camera>(config);
+			s_window = std::make_unique<Window>();
+			s_graphics = std::make_unique<Graphics>(s_window->GetHWND());
+			s_camera = std::make_unique<Camera>();
 
 			// シェーダーを作成する。
-			s_vertexShader = std::make_unique<VertexShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Env::GetString("shader.basicVS"));
+			s_vertexShader = std::make_unique<VertexShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicVS"));
 			s_vertexShader->Bind(s_graphics->GetDC());
-			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Env::GetString("shader.basicPS"));
+			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicPS"));
 			s_pixelShader->Bind(s_graphics->GetDC());
 
 			if (!CreateConstantBuffer()) {
@@ -150,14 +109,14 @@ namespace sora
 
 
 			// imguiを初期化する。
-			s_gui = std::make_unique<GUI>(s_window, s_graphics->GetDevice(), s_graphics->GetDC());
+			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics->GetDevice(), s_graphics->GetDC());
 
 			// アプリケーションの作成が正常に完了。
 			LOG_INFO("Creation completed successfully.");
 			s_initialized = true;
 			s_running = true;
 
-			model = std::make_unique<Model>(s_graphics->GetDevice(), s_graphics->GetDC(), Env::GetString("modelpath"));
+			model = std::make_unique<Model>(s_graphics->GetDevice(), s_graphics->GetDC(), Config::GetString("modelpath"));
 			plane = std::make_unique<Quad>(s_graphics->GetDevice());
 
 			// 無効なテクスチャを作成する。
@@ -204,7 +163,7 @@ namespace sora
 			LOG_INFO("Destroy.");
 
 			// SDLを終了する。
-			SDL_DestroyWindow(s_window);
+			s_window.reset();
 			SDL_Quit();
 
 			// Loggerを終了する。
@@ -248,8 +207,7 @@ namespace sora
 			s_camera->Update(0.0167f);
 
 			// レンダリング開始
-			static auto clearColor = DirectX::Colors::SkyBlue;
-			s_graphics->Begin(clearColor);
+			s_graphics->Begin();
 
 			// プリミティブトポロジの設定
 			s_graphics->GetDC()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -270,29 +228,15 @@ namespace sora
 
 			s_gui->Begin();
 			{
-				ImGui::Begin("Settings");
+				ImGui::Begin("Graphics Config");
 				{
 					static bool wireframe = false;
-					
-					if (ImGui::Checkbox("Wireframe", &wireframe))
-					{
-						static DirectX::XMVECTORF32 beforeColor;
-						if (wireframe)
-						{
-							beforeColor = clearColor;
-							clearColor = DirectX::Colors::Black;
-							s_graphics->SetWireframeMode();
-						}
-						else
-						{
-							clearColor = beforeColor;
-							s_graphics->SetSolidMode();
-						}
-					}
-					if(!wireframe)
-						ImGui::ColorEdit4("Clear Color", clearColor.f);
+					ImGui::Checkbox("Wireframe", &wireframe);
+					wireframe ? s_graphics->SetWireframeMode() : s_graphics->SetSolidMode();
 				}
 				ImGui::End();
+
+				s_gui->CameraConfig(*s_camera);
 			}
 			s_gui->End();
 

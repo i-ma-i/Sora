@@ -23,4 +23,5 @@ using Microsoft::WRL::ComPtr;
 #include <DirectXTK/SimpleMath.h>
 
 
+#include "Config.hpp"
 #include "Logger.hpp"

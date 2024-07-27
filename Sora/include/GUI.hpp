@@ -10,21 +10,20 @@
 
 namespace sora
 {
+//#if defined(DEBUG) || defined(_DEBUG)
 	class GUI
 	{
 	public:
-		GUI(SDL_Window* window, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+		GUI(Window* window, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
 
-			ImGui_ImplSDL2_InitForD3D(window);
+			ImGui_ImplSDL2_InitForD3D(window->m_window);
 			ImGui_ImplDX11_Init(device, deviceContext);
 		}
-
 		~GUI()
 		{
-			// Cleanup
 			ImGui_ImplDX11_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
 			ImGui::DestroyContext();
@@ -54,35 +53,30 @@ namespace sora
 			MouseInput mouse;
 			ImGui::Begin("Mouse Capture");
 			{
-				ImGui::Text("--- Left Button ---");
+				ImGui::SeparatorText("Left Button");
 				ImGui::Text("Clicked : %s", mouse.LeftClicked() ? "!" : "");
 				ImGui::Text("Pressed : %s", mouse.LeftPressed() ? "!" : "");
 				ImGui::Text("Released: %s", mouse.LeftReleased() ? "!" : "");
-				ImGui::Separator();
 
-				ImGui::Text("--- Right Button ---");
+				ImGui::SeparatorText("Right Button");
 				ImGui::Text("Clicked : %s", mouse.RightClicked() ? "!" : "");
 				ImGui::Text("Pressed : %s", mouse.RightPressed() ? "!" : "");
 				ImGui::Text("Released: %s", mouse.RightReleased() ? "!" : "");
-				ImGui::Separator();
 
-				ImGui::Text("--- Middle Button ---");
+				ImGui::SeparatorText("Middle Button");
 				ImGui::Text("Clicked : %s", mouse.MiddleClicked() ? "!" : "");
 				ImGui::Text("Pressed : %s", mouse.MiddlePressed() ? "!" : "");
 				ImGui::Text("Released: %s", mouse.MiddleReleased() ? "!" : "");
-				ImGui::Separator();
 
-				ImGui::Text("--- Absolute Position ---");
+				ImGui::SeparatorText("Absolute Position");
 				ImGui::Text("X: %d", mouse.PositionX());
 				ImGui::Text("Y: %d", mouse.PositionY());
-				ImGui::Separator();
 
-				ImGui::Text("--- Delta Position ---");
+				ImGui::SeparatorText("Delta Position");
 				ImGui::Text("DeltaX: %d", mouse.DeltaX());
 				ImGui::Text("DeltaY: %d", mouse.DeltaY());
-				ImGui::Separator();
 
-				ImGui::Text("--- Wheel Value ---");
+				ImGui::SeparatorText("Wheel Value");
 				ImGui::Text("Value: %d", mouse.WheelValue());
 			}
 			ImGui::End();
@@ -99,11 +93,30 @@ namespace sora
 				ImGui::SliderAngle("Pitch", &camera.m_pitchRad, -90.0f, 90.0f);
 
 				ImGui::SeparatorText("Speed");
-				ImGui::SliderFloat("Move Speed", &camera.m_moveSpeed, 1.0f, 50.0f);
+				ImGui::SliderFloat("Move Speed", &camera.m_moveSpeed, 1.0f, 200.0f);
 				ImGui::SliderFloat("Rotate Speed Radian", &camera.m_rotateSpeedRad, 0.01f, 0.1f, "%.6f", ImGuiSliderFlags_NoRoundToFormat);
-				ImGui::SliderFloat("Zoom Speed", &camera.m_zoomSpeed, 1.0f, 100.0f);
+				ImGui::SliderFloat("Zoom Speed", &camera.m_zoomSpeed, 1.0f, 200.0f);
 			}
 			ImGui::End();
 		}
 	};
+//#else
+//	class GUI
+//	{
+//	public:
+//		GUI(SDL_Window* window, ID3D11Device* device, ID3D11DeviceContext* deviceContext) {}
+//		~GUI() {}
+//
+//		void ProcessEvent(const SDL_Event* event) const {}
+//
+//		void Begin() const {}
+//		void End() const {}
+//
+//		void MenuBar() const {}
+//
+//		void MouseCapture() const {}
+//
+//		void CameraConfig(Camera& camera) const {}
+//	};
+//#endif
 }

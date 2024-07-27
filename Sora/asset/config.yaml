@@ -1,9 +1,9 @@
 # ログ
 logger:
-  filename: "log/log.log"
-  level: "trace"
+  filePath: "log/log.log"
   filePattern: "%Y-%m-%d %T.%e [%L] [%s] %v"
   consolePattern: "%^[%D][%s] %v%$"
+  level: "trace"
 
 # ウィンドウ
 window:

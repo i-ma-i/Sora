@@ -182,11 +182,12 @@ namespace sora
 			// TODO: 途中で個別に設定せずに、最後にパイプラインの設定をする。
 		}
 
-		void Begin(const float* clearColor) const
+		void Begin() const
 		{
 			// レンダーターゲットとデプスステンシルビューを設定する。
 			m_immidiateContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 
+			static float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 			m_immidiateContext->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
 			m_immidiateContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 		}

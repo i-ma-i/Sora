@@ -33,7 +33,8 @@
 ## TODO
 - ImGuizmo
 - アセット管理
-- 大気散乱(Atmospheric Scattering)
+- 基本的なPBR
+- 大気散乱(Atmospheric Scattering)←これがやりたい
 - [DX9シミュレーション](https://hexadrive.jp/lab/demo/385/)
 - [A Physically-Based Nightsky Model](https://graphics.stanford.edu/~henrik/papers/nightsky/)
 - [Precomputed Atmospheric Scattering](https://ebruneton.github.io/precomputed_atmospheric_scattering/)

@@ -34,6 +34,9 @@
     <Filter Include="ヘッダー ファイル\GUI">
       <UniqueIdentifier>{65c1cec9-4fe6-418c-ae87-c3c97d9b807c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Camera">
+      <UniqueIdentifier>{327d5992-3b09-4295-a1ca-438f5f0de788}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -46,9 +49,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Logger.cpp">
-      <Filter>ソース ファイル\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Env.cpp">
       <Filter>ソース ファイル\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Engine.cpp">
@@ -72,15 +72,18 @@
     <ClCompile Include="src\Input\MouseInput.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Config.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Window.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="include\Engine.hpp">
-      <Filter>ヘッダー ファイル\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Env.hpp">
       <Filter>ヘッダー ファイル\Core</Filter>
     </ClInclude>
     <ClInclude Include="include\Logger.hpp">
@@ -126,21 +129,27 @@
       <Filter>ヘッダー ファイル\GUI</Filter>
     </ClInclude>
     <ClInclude Include="include\CKeyboard.hpp">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="include\CMouse.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Camera.hpp">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="include\MouseInput.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexShader.hpp">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="include\PixelShader.hpp">
+      <Filter>ヘッダー ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VertexShader.hpp">
+      <Filter>ヘッダー ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Camera.hpp">
+      <Filter>ヘッダー ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Config.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Window.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

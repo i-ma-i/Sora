@@ -9,16 +9,16 @@ namespace sora
 		struct DrawObject
 		{
 			ComPtr<ID3D11Buffer> vertexBuffer;
-			int numTriangles;
-			size_t material_id;
+			int numTriangles = 0;
+			size_t material_id = -1;
 		};
 
 	public:
 		Model(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11DeviceContext>& context, std::filesystem::path path)
 		{
-			// File check
+			path.make_preferred();
+			// ファイル名を出力する。
 			{
-				path.make_preferred();
 				if (std::filesystem::exists(path) == false)
 				{
 					LOG_ERROR("File not found.  path[{}]", path.string());
@@ -29,7 +29,6 @@ namespace sora
 
 			tinyobj::attrib_t inattrib;
 			std::vector<tinyobj::shape_t> inshapes;
-			//std::vector<tinyobj::material_t> materials;
 			std::string warn, err;
 
 			bool result = tinyobj::LoadObj(
@@ -37,7 +36,7 @@ namespace sora
 				&warn, &err,
 				path.string().c_str(), path.parent_path().string().c_str()
 			);
-			// Check error
+			// モデルファイル読み込みによるエラーと警告を出力する。
 			{
 				if (!warn.empty()) LOG_WARNING("WARN: {}", warn);
 				if (!err.empty()) LOG_ERROR("ERR: {}", err);
@@ -47,7 +46,7 @@ namespace sora
 				}
 			}
 
-			// Print Info
+			// モデルファイルのメタデータを出力する。
 			{
 				LOG_DEBUG("Vertex = {}", (int)(inattrib.vertices.size()) / 3);
 				LOG_DEBUG("Normal = {}", (int)(inattrib.normals.size()) / 3);

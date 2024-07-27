@@ -1,5 +1,4 @@
 ﻿#include "Application.hpp"
-#include "Env.hpp"
 #include "Keyboard.hpp"
 
 using namespace sora;
@@ -21,9 +20,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	HWND consoleWindow = GetConsoleWindow();
 	ShowWindow(consoleWindow, SW_MAXIMIZE);
 #endif
-
-	// 環境変数クラスを作成する。
-	Env::Create(std::filesystem::current_path() / "asset/env.yaml");
 
 	Input Escape = Keyboard::KEY_ESCAPE;
 	while (Application::Update())

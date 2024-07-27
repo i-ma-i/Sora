@@ -160,10 +160,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Config.cpp" />
+    <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Input\CKeyboard.cpp" />
     <ClCompile Include="src\Input\CMouse.cpp" />
     <ClCompile Include="src\Core\Engine.cpp" />
-    <ClCompile Include="src\Core\Env.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Core\Logger.cpp" />
     <ClCompile Include="src\Input\MouseInput.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="include\Camera.hpp" />
     <ClInclude Include="include\CKeyboard.hpp" />
     <ClInclude Include="include\CMouse.hpp" />
+    <ClInclude Include="include\Config.hpp" />
     <ClInclude Include="include\Graphics.hpp" />
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />
@@ -186,7 +188,6 @@
     <ClInclude Include="include\Primitive.hpp" />
     <ClInclude Include="include\ShaderLoader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
-    <ClInclude Include="include\Env.hpp" />
     <ClInclude Include="include\IKeyboard.hpp" />
     <ClInclude Include="include\GUI.hpp" />
     <ClInclude Include="include\IMouse.hpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="include\Logger.hpp" />
     <ClInclude Include="include\Mouse.hpp" />
     <ClInclude Include="include\VertexShader.hpp" />
+    <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

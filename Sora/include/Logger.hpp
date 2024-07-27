@@ -5,18 +5,8 @@ namespace sora
 {
 	namespace Logger
 	{
-		/// @brief ロガーの設定を行うための構造体。
-		struct Config
-		{
-			std::filesystem::path filepath;
-			spdlog::level::level_enum level = spdlog::level::off;
-			std::string filePattern;
-			std::string consolePattern;
-		};
-
 		/// @brief ロガーの設定を行う。
-		/// @param config ロガーの設定。
-		void Setup(const Config& config);
+		void Create();
 
 		/// @brief ロガーのクリーンアップを行う。
 		void Cleanup();
