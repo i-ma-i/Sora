@@ -31,6 +31,7 @@ namespace sora
 			: m_window(window)
 			, m_graphics(graphics)
 			, m_camera(camera)
+			, m_openCameraConfig(Config::GetBool("Camera.m_openCameraConfig"))
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -140,14 +141,15 @@ namespace sora
 			{
 				ImGui::SeparatorText("Attitude");
 				ImGui::InputFloat3("Position", &m_camera->m_position.x);
-				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", m_camera->GetForward().x, m_camera->GetForward().y, m_camera->GetForward().z);
+				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", m_camera->GetForwardLH().x, m_camera->GetForwardLH().y, m_camera->GetForwardLH().z);
 				ImGui::SliderAngle("Yaw", &m_camera->m_yawRad, 0.0f, 360.0f);
 				ImGui::SliderAngle("Pitch", &m_camera->m_pitchRad, -90.0f, 90.0f);
 
 				ImGui::SeparatorText("Speed");
-				ImGui::SliderFloat("Move Speed", &m_camera->m_moveSpeed, 1.0f, 200.0f);
-				ImGui::SliderFloat("Rotate Speed Radian", &m_camera->m_rotateSpeedRad, 0.01f, 0.1f, "%.6f", ImGuiSliderFlags_NoRoundToFormat);
-				ImGui::SliderFloat("Zoom Speed", &m_camera->m_zoomSpeed, 1.0f, 200.0f);
+				static float minSpeed = 0.01f, maxSpeed = 2.0f;
+				ImGui::SliderFloat("Camera Speed", &m_camera->m_moveSpeed, minSpeed, maxSpeed);
+				ImGui::InputFloat("Min", &minSpeed);
+				ImGui::InputFloat("Max", &maxSpeed);
 			}
 			ImGui::End();
 		}
