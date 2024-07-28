@@ -1,7 +1,6 @@
 ﻿#define TINYOBJLOADER_IMPLEMENTATION
 #include "Application.hpp"
 #include "Config.hpp"
-#include "Logger.hpp"
 #include "Window.hpp"
 #include "Engine.hpp"
 #include "IKeyboard.hpp"

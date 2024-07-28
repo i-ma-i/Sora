@@ -158,17 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Config.cpp" />
-    <ClCompile Include="src\Core\Window.cpp" />
-    <ClCompile Include="src\Graphics\ShaderLoader.cpp" />
-    <ClCompile Include="src\Graphics\VertexShader.cpp" />
-    <ClCompile Include="src\Input\CKeyboard.cpp" />
-    <ClCompile Include="src\Input\CMouse.cpp" />
     <ClCompile Include="src\Core\Engine.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
-    <ClCompile Include="src\Core\Logger.cpp" />
     <ClCompile Include="src\Input\MouseInput.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
