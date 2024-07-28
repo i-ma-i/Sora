@@ -161,6 +161,7 @@
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Config.cpp" />
     <ClCompile Include="src\Core\Engine.cpp" />
+    <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Input\MouseInput.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -171,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="external\tiny_obj_loader.h" />
     <ClInclude Include="include\Application.hpp" />
+    <ClInclude Include="include\Cube.hpp" />
     <ClInclude Include="include\ButtonState.hpp" />
     <ClInclude Include="include\Camera.hpp" />
     <ClInclude Include="include\CKeyboard.hpp" />

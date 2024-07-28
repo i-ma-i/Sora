@@ -36,7 +36,7 @@ namespace sora
 			ImGui::CreateContext();
 
 			ImGui_ImplSDL2_InitForD3D(m_window->m_window);
-			ImGui_ImplDX11_Init(m_graphics->GetDevice(), m_graphics->GetDC());
+			ImGui_ImplDX11_Init(m_graphics->GetDevice(), m_graphics->GetContext());
 		}
 		~GUI()
 		{

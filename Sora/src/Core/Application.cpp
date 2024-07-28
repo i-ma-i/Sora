@@ -1,5 +1,4 @@
-﻿#define TINYOBJLOADER_IMPLEMENTATION
-#include "Application.hpp"
+﻿#include "Application.hpp"
 #include "Config.hpp"
 #include "Window.hpp"
 #include "Engine.hpp"
@@ -10,22 +9,11 @@
 #include "ShaderLoader.hpp"
 #include "Model.hpp"
 #include "Primitive.hpp"
+#include "Cube.hpp"
 #include "Camera.hpp"
 #include "VertexShader.hpp"
 #include "PixelShader.hpp"
 #include "ConstantBuffer.hpp"
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
-
-#include <imgui.h>
-
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "setupapi.lib")
-#pragma comment(lib, "version.lib")
-#pragma comment(lib, "Imm32.lib")
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "d3dcompiler.lib")
 
 using namespace DirectX;
 
@@ -50,6 +38,7 @@ namespace sora
 		std::unique_ptr<PixelShader> s_pixelShader;
 		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
 		std::unique_ptr<Quad> s_plane;
+		std::unique_ptr<Cube> s_box;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		bool Create()
@@ -76,20 +65,20 @@ namespace sora
 			s_vertexShader = std::make_unique<VertexShader>(
 				std::filesystem::current_path() / Config::GetString("shader.basicVS"),
 				s_graphics->GetDevice(),
-				DirectX::VertexPositionNormalTexture::InputElements,
-				DirectX::VertexPositionNormalTexture::InputElementCount
+				DirectX::VertexPositionColor::InputElements,
+				DirectX::VertexPositionColor::InputElementCount
 			);
 			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicPS"));
-			s_vertexShader->Bind(s_graphics->GetDC());
-			s_pixelShader->Bind(s_graphics->GetDC());
+			s_vertexShader->Bind(s_graphics->GetContext());
+			s_pixelShader->Bind(s_graphics->GetContext());
 
 			// 定数バッファを作成する。
 			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
-			s_cbTransform->SetPipeline(s_graphics->GetDC(), 0);
+			s_cbTransform->SetPipeline(s_graphics->GetContext(), 0);
 
 			// プリミティブを作成する。
 			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
-
+			s_box = std::make_unique<Cube>(s_graphics.get());
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get());
@@ -192,14 +181,13 @@ namespace sora
 
 			// オブジェクトを描画する。
 			{
-				static float angle = 0.0f;
-				angle += 0.01f;
 				CBTransform transform;
-				transform.World = DirectX::SimpleMath::Matrix::CreateRotationY(angle);
+				transform.World = DirectX::SimpleMath::Matrix::Identity;
 				transform.WVP = transform.World * s_camera->GetViewProjection();
-				s_cbTransform->Update(s_graphics->GetDC(), transform);
-				s_graphics->GetDC()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
-				s_plane->Draw(s_graphics->GetDC());
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				/*s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
+				s_plane->Draw(s_graphics->GetContext());*/
+				s_box->Draw();
 			}
 
 			// GUIを描画する。

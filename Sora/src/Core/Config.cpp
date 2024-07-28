@@ -27,8 +27,7 @@ namespace
 			int index = 0;
 			for (const auto& seq_it : node)
 			{
-				ProcessNode(seq_it, prefix + "[" + std::to_string(index) + "]");
-				++index;
+				ProcessNode(seq_it, prefix + "[" + std::to_string(index++) + "]");
 			}
 		}
 	}
@@ -58,8 +57,19 @@ namespace sora::Config
 		{
 			return it->second;
 		}
-		__debugbreak();
+		DebugBreak();
 		return "";
+	}
+
+	bool GetBool(std::string_view key)
+	{
+		auto it = s_env.find(key.data());
+		if (it != s_env.end())
+		{
+			return it->second == "true";
+		}
+		DebugBreak();
+		return false;
 	}
 
 	int GetInt(std::string_view key)
@@ -69,7 +79,7 @@ namespace sora::Config
 		{
 			return std::stoi(it->second);
 		}
-		__debugbreak();
+		DebugBreak();
 		return 0;
 	}
 
@@ -80,7 +90,7 @@ namespace sora::Config
 		{
 			return std::stof(it->second);
 		}
-		__debugbreak();
+		DebugBreak();
 		return 0;
 	}
 }

@@ -11,14 +11,31 @@ window:
   width: 1920
   height: 1080
 
+# グラフィックス
+Graphics:
+  m_enableWireframe: false
+  m_cullMode: D3D11_CULL_BACK
+  m_frontCounterClockwise: false
+  # clearColor: [0.0, 0.0, 0.0, 1.0]
+  # enableVSync: false
+  # enableMSAA: false
+  # msaaCount: 4
+  # enableDepthTest: true
+  # enableDepthWrite: true
+  # cullFace: "back"
+  # enableBlend: false
+  # blendSrc: "src_alpha"
+  # blendDst: "one_minus_src_alpha"
+  # blendOp: "add"
+
 # カメラ
 camera:
-  position: [0.0, 5.0, -10.0]
+  position: [0.0, 3.0, -5.0]
   yaw: 0.0
   pitch: -0.5
-  moveSpeed: 15.0
+  moveSpeed: 5.0
   rotateSpeed: 0.05
-  zoomSpeed: 20.0
+  zoomSpeed: 10.0
   nearZ: 1.0
   farZ: 1000.0
 
