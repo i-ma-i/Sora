@@ -42,36 +42,35 @@ namespace sora
 		std::unique_ptr<Camera> s_camera;
 		std::unique_ptr<VertexShader> s_vertexShader;
 		std::unique_ptr<PixelShader> s_pixelShader;
-		std::unique_ptr<Model> model;
-		std::unique_ptr<Quad> plane;
+		std::unique_ptr<Quad> s_plane;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		// 定数バッファ
-		ComPtr<ID3D11Buffer> gConstantBuffer;
+		ComPtr<ID3D11Buffer> cbTransform;
 
 		// 定数バッファの作成
-		struct ConstantBuffer
+		struct ConstantBufferTransform
 		{
 			DirectX::SimpleMath::Matrix World;
 			DirectX::SimpleMath::Matrix WVP;
 		};
+		ConstantBufferTransform s_transform;
 
-		ConstantBuffer cb;
 		bool CreateConstantBuffer()
 		{
 			D3D11_BUFFER_DESC bd = {};
 			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(ConstantBuffer);
+			bd.ByteWidth = sizeof(ConstantBufferTransform);
 			bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			bd.CPUAccessFlags = 0;
 			bd.MiscFlags = 0;
 			bd.StructureByteStride = 0;
 
-			HRESULT hr = s_graphics->GetDevice()->CreateBuffer(&bd, nullptr, gConstantBuffer.GetAddressOf());
+			HRESULT hr = s_graphics->GetDevice()->CreateBuffer(&bd, nullptr, cbTransform.GetAddressOf());
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to create constant buffer. HRESULT: {:#X}", hr);
-				return false;
+				DebugBreak();
 			}
 
 			return true;
@@ -98,9 +97,14 @@ namespace sora
 			s_camera = std::make_unique<Camera>();
 
 			// シェーダーを作成する。
-			s_vertexShader = std::make_unique<VertexShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicVS"));
-			s_vertexShader->Bind(s_graphics->GetDC());
+			s_vertexShader = std::make_unique<VertexShader>(
+				std::filesystem::current_path() / Config::GetString("shader.basicVS"),
+				s_graphics->GetDevice(),
+				DirectX::VertexPositionNormalTexture::InputElements,
+				DirectX::VertexPositionNormalTexture::InputElementCount
+			);
 			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicPS"));
+			s_vertexShader->Bind(s_graphics->GetDC());
 			s_pixelShader->Bind(s_graphics->GetDC());
 
 			if (!CreateConstantBuffer()) {
@@ -108,17 +112,12 @@ namespace sora
 				return false;
 			}
 
+			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
+
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get());
 
-			// アプリケーションの作成が正常に完了。
-			LOG_INFO("Creation completed successfully.");
-			s_initialized = true;
-			s_running = true;
-
-			model = std::make_unique<Model>(s_graphics->GetDevice(), s_graphics->GetDC(), Config::GetString("modelpath"));
-			plane = std::make_unique<Quad>(s_graphics->GetDevice());
 
 			// 無効なテクスチャを作成する。
 			{
@@ -155,6 +154,11 @@ namespace sora
 					__debugbreak();
 				}
 			}
+
+			// アプリケーションの作成が正常に完了。
+			LOG_INFO("Creation completed successfully.");
+			s_initialized = true;
+			s_running = true;
 
 			return true;
 		}
@@ -207,30 +211,25 @@ namespace sora
 			Engine::GetModule<IMouse>()->Update(mouseWheel);
 			s_camera->Update(0.0167f);
 
-			// レンダリング開始
+			// 描画を開始する。
 			s_graphics->Begin();
 
-			// プリミティブトポロジの設定
+			// プリミティブトポロジを設定する。
 			s_graphics->GetDC()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			s_graphics->GetDC()->VSSetConstantBuffers(0, 1, gConstantBuffer.GetAddressOf());
+			s_graphics->GetDC()->VSSetConstantBuffers(0, 1, cbTransform.GetAddressOf());
 
-			// カメラ行列を取得する。
-			const auto viewProjection = s_camera->GetViewProjection();
-
-			// オブジェクトの描画
+			// オブジェクトを描画する。
 			{
-				cb.WVP = viewProjection;
-				s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-				model->Draw(s_graphics->GetDC());
+				s_transform.WVP = DirectX::SimpleMath::Matrix::Identity * s_camera->GetViewProjection();
+				s_graphics->GetDC()->UpdateSubresource(cbTransform.Get(), 0, nullptr, &s_transform, 0, 0);
 				s_graphics->GetDC()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
-				s_graphics->GetDC()->UpdateSubresource(gConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-				plane->Draw(s_graphics->GetDC());
+				s_plane->Draw(s_graphics->GetDC());
 			}
 
 			// GUIを描画する。
 			s_gui->Draw();
 
-			// レンダリング終了
+			// 描画を終了終了する。
 			s_graphics->End();
 
 			return true;

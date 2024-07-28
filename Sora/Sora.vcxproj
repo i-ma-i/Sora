@@ -162,6 +162,8 @@
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Config.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Graphics\ShaderLoader.cpp" />
+    <ClCompile Include="src\Graphics\VertexShader.cpp" />
     <ClCompile Include="src\Input\CKeyboard.cpp" />
     <ClCompile Include="src\Input\CMouse.cpp" />
     <ClCompile Include="src\Core\Engine.cpp" />
