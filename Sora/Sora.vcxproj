@@ -183,6 +183,7 @@
     <ClInclude Include="include\CKeyboard.hpp" />
     <ClInclude Include="include\CMouse.hpp" />
     <ClInclude Include="include\Config.hpp" />
+    <ClInclude Include="include\ConstantBuffer.hpp" />
     <ClInclude Include="include\Graphics.hpp" />
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />

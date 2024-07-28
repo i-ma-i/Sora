@@ -14,6 +14,7 @@
 #include "Camera.hpp"
 #include "VertexShader.hpp"
 #include "PixelShader.hpp"
+#include "ConstantBuffer.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -33,6 +34,12 @@ namespace sora
 {
 	namespace
 	{
+		struct CBTransform
+		{
+			DirectX::SimpleMath::Matrix World;
+			DirectX::SimpleMath::Matrix WVP;
+		};
+
 		bool s_initialized = false;
 		bool s_running = false;
 		std::unique_ptr<Window> s_window;
@@ -42,39 +49,9 @@ namespace sora
 		std::unique_ptr<Camera> s_camera;
 		std::unique_ptr<VertexShader> s_vertexShader;
 		std::unique_ptr<PixelShader> s_pixelShader;
+		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
 		std::unique_ptr<Quad> s_plane;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
-
-		// 定数バッファ
-		ComPtr<ID3D11Buffer> cbTransform;
-
-		// 定数バッファの作成
-		struct ConstantBufferTransform
-		{
-			DirectX::SimpleMath::Matrix World;
-			DirectX::SimpleMath::Matrix WVP;
-		};
-		ConstantBufferTransform s_transform;
-
-		bool CreateConstantBuffer()
-		{
-			D3D11_BUFFER_DESC bd = {};
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.ByteWidth = sizeof(ConstantBufferTransform);
-			bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			bd.CPUAccessFlags = 0;
-			bd.MiscFlags = 0;
-			bd.StructureByteStride = 0;
-
-			HRESULT hr = s_graphics->GetDevice()->CreateBuffer(&bd, nullptr, cbTransform.GetAddressOf());
-			if (FAILED(hr))
-			{
-				LOG_ERROR("Failed to create constant buffer. HRESULT: {:#X}", hr);
-				DebugBreak();
-			}
-
-			return true;
-		}
 
 		bool Create()
 		{
@@ -107,11 +84,11 @@ namespace sora
 			s_vertexShader->Bind(s_graphics->GetDC());
 			s_pixelShader->Bind(s_graphics->GetDC());
 
-			if (!CreateConstantBuffer()) {
-				LOG_ERROR("Failed to create constant buffer.");
-				return false;
-			}
+			// 定数バッファを作成する。
+			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
+			s_cbTransform->SetPipeline(s_graphics->GetDC(), 0);
 
+			// プリミティブを作成する。
 			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
 
 
@@ -214,14 +191,14 @@ namespace sora
 			// 描画を開始する。
 			s_graphics->Begin();
 
-			// プリミティブトポロジを設定する。
-			s_graphics->GetDC()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			s_graphics->GetDC()->VSSetConstantBuffers(0, 1, cbTransform.GetAddressOf());
-
 			// オブジェクトを描画する。
 			{
-				s_transform.WVP = DirectX::SimpleMath::Matrix::Identity * s_camera->GetViewProjection();
-				s_graphics->GetDC()->UpdateSubresource(cbTransform.Get(), 0, nullptr, &s_transform, 0, 0);
+				static float angle = 0.0f;
+				angle += 0.01f;
+				CBTransform transform;
+				transform.World = DirectX::SimpleMath::Matrix::CreateRotationY(angle);
+				transform.WVP = transform.World * s_camera->GetViewProjection();
+				s_cbTransform->Update(s_graphics->GetDC(), transform);
 				s_graphics->GetDC()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
 				s_plane->Draw(s_graphics->GetDC());
 			}

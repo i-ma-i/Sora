@@ -158,6 +158,9 @@
     <ClInclude Include="include\Window.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="include\ConstantBuffer.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl" />

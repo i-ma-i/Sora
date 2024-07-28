@@ -184,7 +184,7 @@ namespace sora
 
 		void Begin() const
 		{
-			// レンダーターゲットとデプスステンシルビューを設定する。
+			m_immidiateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			m_immidiateContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 
 			static float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
