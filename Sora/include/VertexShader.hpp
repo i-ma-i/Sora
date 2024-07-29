@@ -31,7 +31,7 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to create input layout. HRESULT: {:#X}", hr);
-				DebugBreak();
+				assert(false && "Failed to create input layout.");
 			}
 		}
 		

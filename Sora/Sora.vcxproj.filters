@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="asset\shader\Constant.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -150,5 +151,7 @@
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl" />
     <FxCompile Include="asset\shader\BasicVS.hlsl" />
+    <FxCompile Include="asset\shader\ColorVS.hlsl" />
+    <FxCompile Include="asset\shader\ColorPS.hlsl" />
   </ItemGroup>
 </Project>

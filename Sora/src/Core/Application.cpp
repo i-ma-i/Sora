@@ -65,12 +65,10 @@ namespace sora
 			s_vertexShader = std::make_unique<VertexShader>(
 				std::filesystem::current_path() / Config::GetString("shader.basicVS"),
 				s_graphics->GetDevice(),
-				DirectX::VertexPositionColor::InputElements,
-				DirectX::VertexPositionColor::InputElementCount
+				DirectX::VertexPositionNormalTexture::InputElements,
+				DirectX::VertexPositionNormalTexture::InputElementCount
 			);
 			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicPS"));
-			s_vertexShader->Bind(s_graphics->GetContext());
-			s_pixelShader->Bind(s_graphics->GetContext());
 
 			// 定数バッファを作成する。
 			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
@@ -187,6 +185,8 @@ namespace sora
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				/*s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
 				s_plane->Draw(s_graphics->GetContext());*/
+				s_vertexShader->Bind(s_graphics->GetContext());
+				s_pixelShader->Bind(s_graphics->GetContext());
 				s_box->Draw();
 			}
 

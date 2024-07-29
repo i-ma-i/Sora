@@ -31,10 +31,8 @@
 
 
 ## TODO
-- Camera Speed [Min, Max]
-- Boxの法線をLineで描画してみる
-- プリミティブの頂点データを作成
-- プリミティブを描画
+- プリミティブにテクスチャを貼る
+- カメラの周回（Alt＋左クリック）
 - プリミティブのマテリアルデータを作成
 - フォンシェーディング
 - 3Dアセットの読み込み
@@ -56,3 +54,4 @@
 
 ## 
 [McGuire](https://casual-effects.com/data/)
+[テクスチャ](https://zenn.dev/kd_gamegikenblg/articles/8f51bf3808dcbc)
