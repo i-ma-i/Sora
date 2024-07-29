@@ -194,6 +194,7 @@
     <ClInclude Include="include\Keyboard.hpp" />
     <ClInclude Include="include\Logger.hpp" />
     <ClInclude Include="include\Mouse.hpp" />
+    <ClInclude Include="include\Sphere.hpp" />
     <ClInclude Include="include\VertexShader.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />

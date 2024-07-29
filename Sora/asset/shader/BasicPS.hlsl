@@ -1,3 +1,5 @@
+#include "Constant.hlsli"
+
 Texture2D textureDiffuse : register(t0);
 SamplerState samplerLinear : register(s0);
 

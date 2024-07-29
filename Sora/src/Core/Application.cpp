@@ -10,6 +10,7 @@
 #include "Model.hpp"
 #include "Primitive.hpp"
 #include "Cube.hpp"
+#include "Sphere.hpp"
 #include "Camera.hpp"
 #include "VertexShader.hpp"
 #include "PixelShader.hpp"
@@ -26,6 +27,31 @@ namespace sora
 			DirectX::SimpleMath::Matrix World;
 			DirectX::SimpleMath::Matrix WVP;
 		};
+		struct CBLight
+		{
+			DirectX::SimpleMath::Vector4 Direction;
+		};
+		class DirectionalLight
+		{
+		public:
+			DirectionalLight()
+				: m_direction(
+					Config::GetFloat("DirectionalLight.m_direction[0]"),
+					Config::GetFloat("DirectionalLight.m_direction[1]"),
+					Config::GetFloat("DirectionalLight.m_direction[0]")
+				)
+			{
+				m_direction.Normalize();
+			}
+
+			DirectX::SimpleMath::Vector4 GetDirection() const
+			{
+				return Vector4(m_direction.x, m_direction.y, m_direction.z, 0.0f);
+			};
+
+		private:
+			DirectX::SimpleMath::Vector3 m_direction;
+		};
 
 		bool s_initialized = false;
 		bool s_running = false;
@@ -37,8 +63,10 @@ namespace sora
 		std::unique_ptr<VertexShader> s_vertexShader;
 		std::unique_ptr<PixelShader> s_pixelShader;
 		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
+		std::unique_ptr<ConstantBuffer<CBLight>> s_cbLight;
 		std::unique_ptr<Quad> s_plane;
 		std::unique_ptr<Cube> s_box;
+		std::unique_ptr<Sphere> s_sphere;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		bool Create()
@@ -73,10 +101,13 @@ namespace sora
 			// 定数バッファを作成する。
 			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
 			s_cbTransform->SetPipeline(s_graphics->GetContext(), 0);
+			s_cbLight = std::make_unique<ConstantBuffer<CBLight>>(s_graphics->GetDevice());
+			s_cbLight->SetPipeline(s_graphics->GetContext(), 1);
 
 			// プリミティブを作成する。
 			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
 			s_box = std::make_unique<Cube>(s_graphics.get());
+			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 10.0f, 100, 100);
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get());
@@ -183,11 +214,15 @@ namespace sora
 				transform.World = DirectX::SimpleMath::Matrix::Identity;
 				transform.WVP = transform.World * s_camera->GetViewProjection();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
-				/*s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
-				s_plane->Draw(s_graphics->GetContext());*/
+				CBLight light;
+				light.Direction = DirectionalLight().GetDirection();
+				s_cbLight->Update(s_graphics->GetContext(), light);
+				s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
+				//s_plane->Draw(s_graphics->GetContext());
 				s_vertexShader->Bind(s_graphics->GetContext());
 				s_pixelShader->Bind(s_graphics->GetContext());
-				s_box->Draw();
+				/*s_box->Draw();*/
+				s_sphere->Draw();
 			}
 
 			// GUIを描画する。

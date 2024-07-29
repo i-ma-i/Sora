@@ -25,13 +25,17 @@ namespace sora
 		bool m_openMouseCapture = false;
 		bool m_openGraphicsConfig = false;
 		bool m_openCameraConfig = false;
+		bool m_openLightConfig = false;
 
 	public:
 		GUI(Window* window, Graphics* graphics, Camera* camera)
 			: m_window(window)
 			, m_graphics(graphics)
 			, m_camera(camera)
-			, m_openCameraConfig(Config::GetBool("Camera.m_openCameraConfig"))
+			, m_openMouseCapture(Config::GetBool("GUI.m_openMouseCapture"))
+			, m_openGraphicsConfig(Config::GetBool("GUI.m_openGraphicsConfig"))
+			, m_openCameraConfig(Config::GetBool("GUI.m_openCameraConfig"))
+			, m_openLightConfig(Config::GetBool("GUI.m_openLightConfig"))
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -61,6 +65,7 @@ namespace sora
 				MouseCapture();
 				GraphicsConfig();
 				CameraConfig();
+				LightConfig();
 			}
 			ImGui::Render();
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -76,6 +81,7 @@ namespace sora
 					if (ImGui::MenuItem("Mouse Capture", nullptr, m_openMouseCapture)) m_openMouseCapture = !m_openMouseCapture;
 					if (ImGui::MenuItem("Graphics Config", nullptr, m_openGraphicsConfig)) m_openGraphicsConfig = !m_openGraphicsConfig;
 					if (ImGui::MenuItem("Camera Config", nullptr, m_openCameraConfig)) m_openCameraConfig = !m_openCameraConfig;
+					if (ImGui::MenuItem("Light Config", nullptr, m_openLightConfig)) m_openLightConfig = !m_openLightConfig;
 
 					ImGui::EndMenu();
 				}
@@ -150,6 +156,18 @@ namespace sora
 				ImGui::SliderFloat("Camera Speed", &m_camera->m_moveSpeed, minSpeed, maxSpeed);
 				ImGui::InputFloat("Min", &minSpeed);
 				ImGui::InputFloat("Max", &maxSpeed);
+			}
+			ImGui::End();
+		}
+
+		void LightConfig() const
+		{
+			if (!m_openLightConfig) return;
+
+			ImGui::Begin("Light Setting");
+			{
+				ImGui::SeparatorText("Directional Light");
+				ImGui::SliderFloat3("Direction", &m_camera->m_position.x, -1.0f, 1.0f);
 			}
 			ImGui::End();
 		}

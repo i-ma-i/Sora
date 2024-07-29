@@ -147,6 +147,9 @@
     <ClInclude Include="include\Cube.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="include\Sphere.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl" />

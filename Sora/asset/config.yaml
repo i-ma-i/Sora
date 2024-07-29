@@ -14,7 +14,7 @@ window:
 # グラフィックス
 Graphics:
   m_enableWireframe: false
-  m_cullMode: D3D11_CULL_NONE
+  m_cullMode: D3D11_CULL_BACK
   m_frontCounterClockwise: false
   # clearColor: [0.0, 0.0, 0.0, 1.0]
   # enableVSync: false
@@ -28,15 +28,27 @@ Graphics:
   # blendDst: "one_minus_src_alpha"
   # blendOp: "add"
 
+# GUI
+GUI:
+  m_openMouseCapture: false
+  m_openGraphicsConfig: false
+  m_openCameraConfig: false
+  m_openLightConfig: true
+
 # カメラ
 Camera:
-  m_openCameraConfig: true
   m_position: [0.0, 3.0, -5.0]
   m_yawRad: 0.0
   m_pitchRad: -0.5
   m_moveSpeed: 1.0
   m_nearZ: 0.1
   m_farZ: 1000.0
+
+# ライト
+DirectionalLight:
+  m_direction: [1.0, -1.0, 1.0]
+  m_color: [1.0, 1.0, 1.0]
+  m_intensity: 1.0
 
 # シェーダー
 shader:
