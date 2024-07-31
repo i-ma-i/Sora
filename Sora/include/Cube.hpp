@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
 
 namespace sora
 {
@@ -107,6 +105,7 @@ namespace sora
 			const auto context = m_graphics->GetContext();
 			context->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &m_stride, &m_offset);
 			context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
 			context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 			context->DrawIndexed(m_indexCount, 0, 0);
 		}

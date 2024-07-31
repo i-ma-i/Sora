@@ -7,9 +7,10 @@
 
 #include "Engine.hpp"
 #include "Window.hpp"
+#include "MouseInput.hpp"
 #include "Graphics.hpp"
 #include "Camera.hpp"
-#include "MouseInput.hpp"
+#include "DirectionalLight.hpp"
 
 namespace sora
 {
@@ -20,6 +21,7 @@ namespace sora
 		Window* m_window;
 		Graphics* m_graphics;
 		Camera* m_camera;
+		DirectionalLight* m_light;
 
 	private:
 		bool m_openMouseCapture = false;
@@ -28,10 +30,11 @@ namespace sora
 		bool m_openLightConfig = false;
 
 	public:
-		GUI(Window* window, Graphics* graphics, Camera* camera)
+		GUI(Window* window, Graphics* graphics, Camera* camera, DirectionalLight* light)
 			: m_window(window)
 			, m_graphics(graphics)
 			, m_camera(camera)
+			, m_light(light)
 			, m_openMouseCapture(Config::GetBool("GUI.m_openMouseCapture"))
 			, m_openGraphicsConfig(Config::GetBool("GUI.m_openGraphicsConfig"))
 			, m_openCameraConfig(Config::GetBool("GUI.m_openCameraConfig"))
@@ -167,7 +170,7 @@ namespace sora
 			ImGui::Begin("Light Setting");
 			{
 				ImGui::SeparatorText("Directional Light");
-				ImGui::SliderFloat3("Direction", &m_camera->m_position.x, -1.0f, 1.0f);
+				ImGui::SliderFloat3("Direction", &m_light->m_direction.x, -1.0f, 1.0f);
 			}
 			ImGui::End();
 		}

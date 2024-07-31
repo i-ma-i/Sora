@@ -1,48 +1,54 @@
 ﻿#pragma once
+#include "Asset.hpp"
 #include "ShaderLoader.hpp"
 
 namespace sora
 {
-	class VertexShader
+	class VertexShader : public Asset
 	{
 	public:
-		VertexShader(
-			const std::filesystem::path& path,
-			const ComPtr<ID3D11Device>& device,
-			const D3D11_INPUT_ELEMENT_DESC* pInputElementDescs,
-			UINT NumElements
-		)
-		{
-			ComPtr<ID3DBlob> blob = ShaderLoader::LoadCSO(path);
+		VertexShader() = default;
+		VertexShader(const std::filesystem::path& path, Graphics* graphics, const D3D11_INPUT_ELEMENT_DESC* inputElementDescs, UINT numElements)
+			: Asset(path)
+			, m_graphics(graphics)
+			, m_inputElementDescs(inputElementDescs)
+			, m_numElements(numElements)
+		{}
 
-			// 頂点シェーダーを作成する。
+		void LoadToMemory() override
+		{
+			const auto device = m_graphics->GetDevice();
+
+			ComPtr<ID3DBlob> blob = ShaderLoader::LoadCSO(m_path);
 			auto hr = device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_vertexShader.ReleaseAndGetAddressOf());
 			if (FAILED(hr))
 			{
-				LOG_ERROR("Failed to create vertex shader. HRESULT: {:#X}", hr);
-				DebugBreak();
+				LOG_ERROR("Failed to create vertex shader. PATH: {}", m_path.string());
+				__debugbreak();
 			}
 
-			hr = device->CreateInputLayout(
-				pInputElementDescs,
-				NumElements,
-				blob->GetBufferPointer(), blob->GetBufferSize(),
-				m_inputLayout.ReleaseAndGetAddressOf());
+			hr = device->CreateInputLayout(m_inputElementDescs, m_numElements, blob->GetBufferPointer(), blob->GetBufferSize(), m_inputLayout.ReleaseAndGetAddressOf());
 			if (FAILED(hr))
 			{
-				LOG_ERROR("Failed to create input layout. HRESULT: {:#X}", hr);
-				assert(false && "Failed to create input layout.");
+				LOG_ERROR("Failed to create input layout. PATH: {}", m_path.string());
+				__debugbreak();
 			}
+
+			m_loadedInMemory = true;
 		}
-		
-		void Bind(const ComPtr<ID3D11DeviceContext>& context) const
+
+		void SetPipeline() const
 		{
+			const auto context = m_graphics->GetContext();
 			context->IASetInputLayout(m_inputLayout.Get());
 			context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 		}
 
 	private:
-		ComPtr<ID3D11VertexShader> m_vertexShader;
+		Graphics* m_graphics = nullptr;
+		const D3D11_INPUT_ELEMENT_DESC* m_inputElementDescs = nullptr;
+		UINT m_numElements = 0;
 		ComPtr<ID3D11InputLayout> m_inputLayout;
+		ComPtr<ID3D11VertexShader> m_vertexShader;
 	};
 }

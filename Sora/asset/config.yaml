@@ -1,3 +1,8 @@
+# ディレクトリ
+Directory:
+  asset: "asset"
+  shader: "C:/dev/Sora/Intermediate/Debug/asset/shader"
+
 # ログ
 logger:
   filePath: "log/log.log"
@@ -47,16 +52,14 @@ Camera:
 # ライト
 DirectionalLight:
   m_direction: [1.0, -1.0, 1.0]
-  m_color: [1.0, 1.0, 1.0]
-  m_intensity: 1.0
 
 # シェーダー
 shader:
-  basicVS: "Asset/shader/BasicVS.cso"
-  basicPS: "Asset/shader/BasicPS.cso"
+  basicVS: "asset/shader/BasicVS.cso"
+  basicPS: "asset/shader/BasicPS.cso"
 
 # モデル
-modelpath: "Asset/model/cube/cube.obj"
+modelpath: "asset/model/cube/cube.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-1k.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-4k.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-16k.obj"

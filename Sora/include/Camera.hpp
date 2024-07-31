@@ -37,11 +37,11 @@ namespace sora
 	{
 	public:
 		Camera()
-		: m_position(DirectX::SimpleMath::Vector3(
+		: m_position(
 			Config::GetFloat("Camera.m_position[0]"),
 			Config::GetFloat("Camera.m_position[1]"),
 			Config::GetFloat("Camera.m_position[2]")
-		))
+		)
 			, m_yawRad(Config::GetFloat("Camera.m_yawRad"))
 			, m_pitchRad(Config::GetFloat("Camera.m_pitchRad"))
 			, m_moveSpeed(Config::GetFloat("Camera.m_moveSpeed"))
@@ -55,6 +55,7 @@ namespace sora
 			);
 		}
 
+		DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 		DirectX::SimpleMath::Matrix GetView() const { return m_view; }
 		DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
 		DirectX::SimpleMath::Matrix GetViewProjection() const { return m_view * m_projection;}

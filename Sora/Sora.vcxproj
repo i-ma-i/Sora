@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Asset\AssetRegistry.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Config.cpp" />
     <ClCompile Include="src\Core\Engine.cpp" />
@@ -173,6 +174,8 @@
   <ItemGroup>
     <ClInclude Include="external\tiny_obj_loader.h" />
     <ClInclude Include="include\Application.hpp" />
+    <ClInclude Include="include\Asset.hpp" />
+    <ClInclude Include="include\AssetRegistry.hpp" />
     <ClInclude Include="include\Cube.hpp" />
     <ClInclude Include="include\ButtonState.hpp" />
     <ClInclude Include="include\Camera.hpp" />
@@ -180,6 +183,7 @@
     <ClInclude Include="include\CMouse.hpp" />
     <ClInclude Include="include\Config.hpp" />
     <ClInclude Include="include\ConstantBuffer.hpp" />
+    <ClInclude Include="include\DirectionalLight.hpp" />
     <ClInclude Include="include\Graphics.hpp" />
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />
@@ -205,8 +209,8 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\asset\shader\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\asset\shader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)asset\shader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)asset\shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="asset\shader\BasicVS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

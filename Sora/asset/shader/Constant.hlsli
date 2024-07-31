@@ -6,6 +6,6 @@ cbuffer Transform : register(b0)
 
 cbuffer Light : register(b1)
 {
-    float3 LightDir;
-    float dirPadding;
+    float4 LightDirection;
+    float4 CameraPosition;
 };

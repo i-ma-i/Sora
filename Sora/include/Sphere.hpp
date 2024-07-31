@@ -1,4 +1,7 @@
 ﻿#pragma once
+#include "AssetRegistry.hpp"
+#include "VertexShader.hpp"
+#include "PixelShader.hpp"
 
 namespace sora
 {
@@ -89,11 +92,16 @@ namespace sora
 
 			context->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &m_stride, &m_offset);
 			context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+			AssetRegistry::GetAsset<VertexShader>(VS)->SetPipeline();
+			AssetRegistry::GetAsset<PixelShader>(PS)->SetPipeline();
 			context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 			context->DrawIndexed(m_indexCount, 0, 0);
 		}
 
 	private:
+		static constexpr std::string_view VS = "Shader.Basic.VS";
+		static constexpr std::string_view PS = "Shader.Basic.PS";
 		ComPtr<ID3D11Buffer> m_vertexBuffer;
 		ComPtr<ID3D11Buffer> m_indexBuffer;
 		ComPtr<ID3D11ShaderResourceView> m_texture;

@@ -5,6 +5,7 @@
 #include "IKeyboard.hpp"
 #include "IMouse.hpp"
 #include "Graphics.hpp"
+#include "AssetRegistry.hpp"
 #include "GUI.hpp"
 #include "ShaderLoader.hpp"
 #include "Model.hpp"
@@ -12,11 +13,13 @@
 #include "Cube.hpp"
 #include "Sphere.hpp"
 #include "Camera.hpp"
+#include "DirectionalLight.hpp"
 #include "VertexShader.hpp"
 #include "PixelShader.hpp"
 #include "ConstantBuffer.hpp"
 
 using namespace DirectX;
+using path = std::filesystem::path;
 
 namespace sora
 {
@@ -27,41 +30,16 @@ namespace sora
 			DirectX::SimpleMath::Matrix World;
 			DirectX::SimpleMath::Matrix WVP;
 		};
-		struct CBLight
-		{
-			DirectX::SimpleMath::Vector4 Direction;
-		};
-		class DirectionalLight
-		{
-		public:
-			DirectionalLight()
-				: m_direction(
-					Config::GetFloat("DirectionalLight.m_direction[0]"),
-					Config::GetFloat("DirectionalLight.m_direction[1]"),
-					Config::GetFloat("DirectionalLight.m_direction[0]")
-				)
-			{
-				m_direction.Normalize();
-			}
-
-			DirectX::SimpleMath::Vector4 GetDirection() const
-			{
-				return Vector4(m_direction.x, m_direction.y, m_direction.z, 0.0f);
-			};
-
-		private:
-			DirectX::SimpleMath::Vector3 m_direction;
-		};
-
+		
 		bool s_initialized = false;
 		bool s_running = false;
 		std::unique_ptr<Window> s_window;
 		std::unique_ptr<Engine> s_engine;
 		std::unique_ptr<Graphics> s_graphics;
+		std::unique_ptr<AssetRegistry> s_assetRegistry;
 		std::unique_ptr<GUI> s_gui;
 		std::unique_ptr<Camera> s_camera;
-		std::unique_ptr<VertexShader> s_vertexShader;
-		std::unique_ptr<PixelShader> s_pixelShader;
+		std::unique_ptr<DirectionalLight> s_light;
 		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
 		std::unique_ptr<ConstantBuffer<CBLight>> s_cbLight;
 		std::unique_ptr<Quad> s_plane;
@@ -76,6 +54,7 @@ namespace sora
 
 			LOG_INFO("Creating...");
 
+			// Engineを作成する。
 			s_engine = std::make_unique<Engine>();
 
 			// SDLを初期化する。
@@ -87,16 +66,9 @@ namespace sora
 
 			s_window = std::make_unique<Window>();
 			s_graphics = std::make_unique<Graphics>(s_window->GetHWND());
+			s_assetRegistry = std::make_unique<AssetRegistry>(s_graphics.get());
 			s_camera = std::make_unique<Camera>();
-
-			// シェーダーを作成する。
-			s_vertexShader = std::make_unique<VertexShader>(
-				std::filesystem::current_path() / Config::GetString("shader.basicVS"),
-				s_graphics->GetDevice(),
-				DirectX::VertexPositionNormalTexture::InputElements,
-				DirectX::VertexPositionNormalTexture::InputElementCount
-			);
-			s_pixelShader = std::make_unique<PixelShader>(s_graphics->GetDevice(), std::filesystem::current_path() / Config::GetString("shader.basicPS"));
+			s_light = std::make_unique<DirectionalLight>();
 
 			// 定数バッファを作成する。
 			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
@@ -107,10 +79,10 @@ namespace sora
 			// プリミティブを作成する。
 			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
 			s_box = std::make_unique<Cube>(s_graphics.get());
-			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 10.0f, 100, 100);
+			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 1.0f, 100, 100);
 
 			// imguiを初期化する。
-			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get());
+			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
 
 
 			// 無効なテクスチャを作成する。
@@ -213,14 +185,16 @@ namespace sora
 				CBTransform transform;
 				transform.World = DirectX::SimpleMath::Matrix::Identity;
 				transform.WVP = transform.World * s_camera->GetViewProjection();
+				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
+
 				CBLight light;
-				light.Direction = DirectionalLight().GetDirection();
+				light.Direction = s_light->GetDirection();
+				light.CameraPosition = DirectX::SimpleMath::Vector4(s_camera->GetPosition().x, s_camera->GetPosition().y, s_camera->GetPosition().z, 0.0f);
 				s_cbLight->Update(s_graphics->GetContext(), light);
+
 				s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
 				//s_plane->Draw(s_graphics->GetContext());
-				s_vertexShader->Bind(s_graphics->GetContext());
-				s_pixelShader->Bind(s_graphics->GetContext());
 				/*s_box->Draw();*/
 				s_sphere->Draw();
 			}
