@@ -1,7 +1,6 @@
 # ディレクトリ
 Directory:
   asset: "asset"
-  shader: "C:/dev/Sora/Intermediate/Debug/asset/shader"
 
 # ログ
 logger:
@@ -54,9 +53,10 @@ DirectionalLight:
   m_direction: [1.0, -1.0, 1.0]
 
 # シェーダー
-shader:
-  basicVS: "asset/shader/BasicVS.cso"
-  basicPS: "asset/shader/BasicPS.cso"
+Shader:
+  Basic:
+    VS: "shader/BasicVS.cso"
+    PS: "shader/BasicPS.cso"
 
 # モデル
 modelpath: "asset/model/cube/cube.obj"

@@ -46,11 +46,17 @@
     <Filter Include="リソース ファイル\shader">
       <UniqueIdentifier>{df61fafc-84a2-4fa5-9d3e-89dbf5db7f2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Asset">
+      <UniqueIdentifier>{291a4117-53a2-43c5-b4ea-954fd0d30225}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
     <None Include="asset\shader\Constant.hlsli">
       <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="asset\config.yaml">
+      <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +128,6 @@
     <ClInclude Include="include\Model.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="include\Primitive.hpp">
-      <Filter>ヘッダー ファイル\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="include\ShaderLoader.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
@@ -167,11 +170,14 @@
     <ClInclude Include="include\DirectionalLight.hpp">
       <Filter>ヘッダー ファイル\Light</Filter>
     </ClInclude>
-    <ClInclude Include="include\AssetRegistry.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="include\Asset.hpp">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssetRegistry.hpp">
+      <Filter>ヘッダー ファイル\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Quad.hpp">
+      <Filter>ヘッダー ファイル\Primitive</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

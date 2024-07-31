@@ -7,15 +7,12 @@
 #include "Graphics.hpp"
 #include "AssetRegistry.hpp"
 #include "GUI.hpp"
-#include "ShaderLoader.hpp"
 #include "Model.hpp"
-#include "Primitive.hpp"
+#include "Quad.hpp"
 #include "Cube.hpp"
 #include "Sphere.hpp"
 #include "Camera.hpp"
 #include "DirectionalLight.hpp"
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
 #include "ConstantBuffer.hpp"
 
 using namespace DirectX;
@@ -42,8 +39,8 @@ namespace sora
 		std::unique_ptr<DirectionalLight> s_light;
 		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
 		std::unique_ptr<ConstantBuffer<CBLight>> s_cbLight;
-		std::unique_ptr<Quad> s_plane;
-		std::unique_ptr<Cube> s_box;
+		std::unique_ptr<Quad> s_quad;
+		std::unique_ptr<Cube> s_cube;
 		std::unique_ptr<Sphere> s_sphere;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
@@ -77,9 +74,9 @@ namespace sora
 			s_cbLight->SetPipeline(s_graphics->GetContext(), 1);
 
 			// プリミティブを作成する。
-			s_plane = std::make_unique<Quad>(s_graphics->GetDevice());
-			s_box = std::make_unique<Cube>(s_graphics.get());
-			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 1.0f, 100, 100);
+			s_quad = std::make_unique<Quad>(s_graphics.get());
+			s_cube = std::make_unique<Cube>(s_graphics.get());
+			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 0.5f, 20, 20);
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
@@ -157,8 +154,8 @@ namespace sora
 				return false;
 			}
 
-			SDL_Event event;
-			int mouseWheel = 0;
+			static SDL_Event event;
+			static int mouseWheel = 0;
 			while (SDL_PollEvent(&event) != 0)
 			{
 				s_gui->ProcessEvent(&event);
@@ -182,20 +179,42 @@ namespace sora
 
 			// オブジェクトを描画する。
 			{
-				CBTransform transform;
-				transform.World = DirectX::SimpleMath::Matrix::Identity;
-				transform.WVP = transform.World * s_camera->GetViewProjection();
-				transform.WVP = transform.WVP.Transpose();
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
-
 				CBLight light;
 				light.Direction = s_light->GetDirection();
 				light.CameraPosition = DirectX::SimpleMath::Vector4(s_camera->GetPosition().x, s_camera->GetPosition().y, s_camera->GetPosition().z, 0.0f);
 				s_cbLight->Update(s_graphics->GetContext(), light);
 
 				s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
-				//s_plane->Draw(s_graphics->GetContext());
-				/*s_box->Draw();*/
+
+				CBTransform transform;
+				const auto viewProjection = s_camera->GetViewProjection();
+
+				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-3.0f, 0.0f, 0.0f));
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_quad->Draw();
+				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.0f, 0.0f, 0.0f));
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_quad->Draw();
+
+				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-1.5f, 0.0f, 0.0f));
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_cube->Draw();
+				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.5f, 0.0f, 0.0f));
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_cube->Draw();
+
+				transform.World = DirectX::SimpleMath::Matrix::Identity;
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_sphere->Draw();
 			}
 

@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="asset\config.yaml" />
     <None Include="asset\shader\Constant.hlsli" />
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +189,7 @@
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />
     <ClInclude Include="include\PixelShader.hpp" />
-    <ClInclude Include="include\Primitive.hpp" />
+    <ClInclude Include="include\Quad.hpp" />
     <ClInclude Include="include\ShaderLoader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
     <ClInclude Include="include\IKeyboard.hpp" />
