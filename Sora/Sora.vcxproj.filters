@@ -179,6 +179,9 @@
     <ClInclude Include="include\Quad.hpp">
       <Filter>ヘッダー ファイル\Primitive</Filter>
     </ClInclude>
+    <ClInclude Include="include\Plane.hpp">
+      <Filter>ヘッダー ファイル\Primitive</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl">

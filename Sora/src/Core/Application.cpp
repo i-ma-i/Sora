@@ -11,6 +11,7 @@
 #include "Quad.hpp"
 #include "Cube.hpp"
 #include "Sphere.hpp"
+#include "Plane.hpp"
 #include "Camera.hpp"
 #include "DirectionalLight.hpp"
 #include "ConstantBuffer.hpp"
@@ -42,6 +43,7 @@ namespace sora
 		std::unique_ptr<Quad> s_quad;
 		std::unique_ptr<Cube> s_cube;
 		std::unique_ptr<Sphere> s_sphere;
+		std::unique_ptr<Plane> s_plane;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		bool Create()
@@ -76,7 +78,8 @@ namespace sora
 			// プリミティブを作成する。
 			s_quad = std::make_unique<Quad>(s_graphics.get());
 			s_cube = std::make_unique<Cube>(s_graphics.get());
-			s_sphere = std::make_unique<Sphere>(s_graphics.get(), 0.5f, 20, 20);
+			s_sphere = std::make_unique<Sphere>(s_graphics.get());
+			s_plane = std::make_unique<Plane>(s_graphics.get());
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
@@ -216,6 +219,12 @@ namespace sora
 				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_sphere->Draw();
+
+				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, -0.5f, 0.0f));
+				transform.WVP = transform.World * viewProjection;
+				transform.WVP = transform.WVP.Transpose();
+				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_plane->Draw();
 			}
 
 			// GUIを描画する。
