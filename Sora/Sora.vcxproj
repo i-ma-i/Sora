@@ -186,6 +186,7 @@
     <ClInclude Include="include\ConstantBuffer.hpp" />
     <ClInclude Include="include\DirectionalLight.hpp" />
     <ClInclude Include="include\Graphics.hpp" />
+    <ClInclude Include="include\IndexBuffer.hpp" />
     <ClInclude Include="include\Model.hpp" />
     <ClInclude Include="include\MouseInput.hpp" />
     <ClInclude Include="include\PixelShader.hpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="include\Logger.hpp" />
     <ClInclude Include="include\Mouse.hpp" />
     <ClInclude Include="include\Sphere.hpp" />
+    <ClInclude Include="include\VertexBuffer.hpp" />
     <ClInclude Include="include\VertexShader.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />

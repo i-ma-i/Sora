@@ -35,9 +35,9 @@ Graphics:
 # GUI
 GUI:
   m_openMouseCapture: false
-  m_openGraphicsConfig: false
+  m_openGraphicsConfig: true
   m_openCameraConfig: false
-  m_openLightConfig: true
+  m_openLightConfig: false
 
 # カメラ
 Camera:

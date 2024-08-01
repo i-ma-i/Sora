@@ -182,6 +182,12 @@
     <ClInclude Include="include\Plane.hpp">
       <Filter>ヘッダー ファイル\Primitive</Filter>
     </ClInclude>
+    <ClInclude Include="include\VertexBuffer.hpp">
+      <Filter>ヘッダー ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IndexBuffer.hpp">
+      <Filter>ヘッダー ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl">
