@@ -17,18 +17,13 @@
 #include "ConstantBuffer.hpp"
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
 using path = std::filesystem::path;
 
 namespace sora
 {
 	namespace
 	{
-		struct CBTransform
-		{
-			DirectX::SimpleMath::Matrix World;
-			DirectX::SimpleMath::Matrix WVP;
-		};
-		
 		bool s_initialized = false;
 		bool s_running = false;
 		std::unique_ptr<Window> s_window;
@@ -38,8 +33,7 @@ namespace sora
 		std::unique_ptr<GUI> s_gui;
 		std::unique_ptr<Camera> s_camera;
 		std::unique_ptr<DirectionalLight> s_light;
-		std::unique_ptr<ConstantBuffer<CBTransform>> s_cbTransform;
-		std::unique_ptr<ConstantBuffer<CBLight>> s_cbLight;
+		std::unique_ptr<ConstantBuffer> s_constantBuffer;
 		std::unique_ptr<Quad> s_quad;
 		std::unique_ptr<Cube> s_cube;
 		std::unique_ptr<Sphere> s_sphere;
@@ -68,12 +62,7 @@ namespace sora
 			s_assetRegistry = std::make_unique<AssetRegistry>(s_graphics.get());
 			s_camera = std::make_unique<Camera>();
 			s_light = std::make_unique<DirectionalLight>();
-
-			// 定数バッファを作成する。
-			s_cbTransform = std::make_unique<ConstantBuffer<CBTransform>>(s_graphics->GetDevice());
-			s_cbTransform->SetPipeline(s_graphics->GetContext(), 0);
-			s_cbLight = std::make_unique<ConstantBuffer<CBLight>>(s_graphics->GetDevice());
-			s_cbLight->SetPipeline(s_graphics->GetContext(), 1);
+			s_constantBuffer = std::make_unique<ConstantBuffer>(s_graphics.get());
 
 			// プリミティブを作成する。
 			s_quad = std::make_unique<Quad>(s_graphics.get());
@@ -182,42 +171,26 @@ namespace sora
 
 			// オブジェクトを描画する。
 			{
-				CBLight light;
-				light.Direction = s_light->GetDirection();
-				light.CameraPosition = DirectX::SimpleMath::Vector4(s_camera->GetPosition().x, s_camera->GetPosition().y, s_camera->GetPosition().z, 0.0f);
-				s_cbLight->Update(s_graphics->GetContext(), light);
+				s_constantBuffer->UpdateCamera(s_camera->GetPosition());
+				s_constantBuffer->UpdateDirectionalLight(s_light->m_direction, s_light->m_color, s_light->m_ambient);
 
-				s_graphics->GetContext()->PSSetShaderResources(0, 1, s_invalidTexture.GetAddressOf());
+				const auto view = s_camera->GetView();
+				const auto projection = s_camera->GetProjection();
 
-				CBTransform transform;
-				const auto viewProjection = s_camera->GetViewProjection();
-
-				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-3.0f, 0.0f, 0.0f));
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-3.0f, 0.0f, 0.0f)), view, projection);
 				s_quad->Draw();
-				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.0f, 0.0f, 0.0f));
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(3.0f, 0.0f, 0.0f)), view, projection);
 				s_quad->Draw();
 
-				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-1.5f, 0.0f, 0.0f));
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-1.5f, 0.0f, 0.0f)), view, projection);
 				s_cube->Draw();
-				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.5f, 0.0f, 0.0f));
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(1.5f, 0.0f, 0.0f)), view, projection);
 				s_cube->Draw();
 
-				transform.World = DirectX::SimpleMath::Matrix::Identity;
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
 				s_sphere->Draw();
 
-				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, -0.5f, 0.0f));
-				transform.WVP = transform.World * viewProjection;
-				s_cbTransform->Update(s_graphics->GetContext(), transform);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
 				s_plane->Draw();
 			}
 

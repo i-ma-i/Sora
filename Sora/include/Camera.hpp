@@ -68,7 +68,7 @@ namespace sora
 			m_forward = GetForwardLH();
 			m_right = Vector3::Up.Cross(m_forward);
 			const float deltaMove = m_moveSpeed * deltaTime * MOVE_SCALE;
-			const Vector2 mouseDelta = Vector2((float)s_mouseInput.DeltaX(), (float)s_mouseInput.DeltaY()) * deltaTime;
+			const Vector2 mouseDelta = Vector2((float)s_mouseInput.DeltaX(), (float)s_mouseInput.DeltaY()) * deltaTime * ROTATE_SCALE;
 
 			// マウスホイールでズームする。
 			m_position += m_forward * (float)s_mouseInput.WheelValue() * deltaTime * ZOOM_SCALE;
@@ -76,8 +76,8 @@ namespace sora
 			if (s_mouseInput.RightPressed())
 			{
 				// マウスの右ボタンを押している間、カメラを回転させる。
-				m_yaw += mouseDelta.x * ROTATE_SCALE;
-				m_pitch -= mouseDelta.y * ROTATE_SCALE;
+				m_yaw += mouseDelta.x;
+				m_pitch -= mouseDelta.y;
 				m_pitch = std::clamp(m_pitch, -XM_PIDIV2, XM_PIDIV2);
 
 				// マウスの右ボタンを押している間,カメラを移動させる。

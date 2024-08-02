@@ -17,7 +17,7 @@ window:
 
 # グラフィックス
 Graphics:
-  m_enableWireframe: true
+  m_enableWireframe: false
   m_cullMode: D3D11_CULL_BACK
   m_frontCounterClockwise: false
   # clearColor: [0.0, 0.0, 0.0, 1.0]
@@ -36,7 +36,7 @@ Graphics:
 GUI:
   m_openMouseCapture: false
   m_openGraphicsConfig: false
-  m_openCameraConfig: true
+  m_openCameraConfig: false
   m_openLightConfig: false
 
 # カメラ
@@ -50,6 +50,8 @@ Camera:
 # ライト
 DirectionalLight:
   m_direction: [1.0, -1.0, 1.0]
+  m_color: [1.0, 1.0, 1.0]
+  m_ambient: [0.1, 0.1, 0.1]
 
 # シェーダー
 Shader:

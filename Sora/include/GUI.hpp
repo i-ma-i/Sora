@@ -174,6 +174,8 @@ namespace sora
 			{
 				ImGui::SeparatorText("Directional Light");
 				ImGui::SliderFloat3("Direction", &m_light->m_direction.x, -1.0f, 1.0f);
+				ImGui::ColorEdit3("Color", &m_light->m_color.x);
+				ImGui::ColorEdit3("Ambient", &m_light->m_ambient.x);
 			}
 			ImGui::End();
 		}
