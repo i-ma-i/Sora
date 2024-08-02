@@ -23,6 +23,10 @@ namespace sora
 	private:
 		void Update(int wheel) override
 		{
+			m_deltaX = 0;
+			m_deltaY = 0;
+			m_wheelValue = 0;
+
 			Uint32 buttons = SDL_GetMouseState(&m_positionX, &m_positionY);
 			SDL_GetRelativeMouseState(&m_deltaX, &m_deltaY);
 			m_wheelValue = wheel;

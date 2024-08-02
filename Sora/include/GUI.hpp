@@ -135,9 +135,10 @@ namespace sora
 
 			ImGui::Begin("Graphics Config");
 			{
-				static bool wireframe = false;
-				ImGui::Checkbox("Wireframe", &wireframe);
-				wireframe ? m_graphics->SetWireframeMode() : m_graphics->SetSolidMode();
+				if (ImGui::Checkbox("Wireframe", &m_graphics->m_enableWireframe))
+				{
+					m_graphics->m_enableWireframe ? m_graphics->SetWireframeMode() : m_graphics->SetSolidMode();
+				}
 			}
 			ImGui::End();
 		}
@@ -150,9 +151,11 @@ namespace sora
 			{
 				ImGui::SeparatorText("Attitude");
 				ImGui::InputFloat3("Position", &m_camera->m_position.x);
-				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", m_camera->GetForwardLH().x, m_camera->GetForwardLH().y, m_camera->GetForwardLH().z);
-				ImGui::SliderAngle("Yaw", &m_camera->m_yawRad, 0.0f, 360.0f);
-				ImGui::SliderAngle("Pitch", &m_camera->m_pitchRad, -90.0f, 90.0f);
+				ImGui::Text("Forward: (%.2f, %.2f, %.2f)", m_camera->m_forward.x, m_camera->m_forward.y, m_camera->m_forward.z);
+				ImGui::Text("Right: (%.2f, %.2f, %.2f)", m_camera->m_right.x, m_camera->m_right.y, m_camera->m_right.z);
+				ImGui::Text("Up: (%.2f, %.2f, %.2f)", m_camera->m_up.x, m_camera->m_up.y, m_camera->m_up.z);
+				ImGui::SliderAngle("Yaw", &m_camera->m_yaw, 0.0f, 360.0f);
+				ImGui::SliderAngle("Pitch", &m_camera->m_pitch, -90.0f, 90.0f);
 
 				ImGui::SeparatorText("Speed");
 				static float minSpeed = 0.01f, maxSpeed = 2.0f;

@@ -35,5 +35,8 @@ namespace sora
 		ComPtr<ID3D11DepthStencilView> m_depthStencilView;
 		ComPtr<ID3D11RasterizerState> m_rsSolid, m_rsWireframe;
 		ComPtr<ID3D11SamplerState> m_samplerState;
+
+	private:
+		friend class GUI;
 	};
 }

@@ -17,7 +17,7 @@ window:
 
 # グラフィックス
 Graphics:
-  m_enableWireframe: false
+  m_enableWireframe: true
   m_cullMode: D3D11_CULL_BACK
   m_frontCounterClockwise: false
   # clearColor: [0.0, 0.0, 0.0, 1.0]
@@ -35,15 +35,14 @@ Graphics:
 # GUI
 GUI:
   m_openMouseCapture: false
-  m_openGraphicsConfig: true
-  m_openCameraConfig: false
+  m_openGraphicsConfig: false
+  m_openCameraConfig: true
   m_openLightConfig: false
 
 # カメラ
 Camera:
   m_position: [0.0, 3.0, -5.0]
-  m_yawRad: 0.0
-  m_pitchRad: -0.5
+  m_target: [0.0, 0.0, 0.0]
   m_moveSpeed: 1.0
   m_nearZ: 0.1
   m_farZ: 1000.0

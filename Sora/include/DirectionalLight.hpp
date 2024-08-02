@@ -12,11 +12,7 @@ namespace sora
 	{
 	public:
 		DirectionalLight()
-			: m_direction(
-				Config::GetFloat("DirectionalLight.m_direction[0]"),
-				Config::GetFloat("DirectionalLight.m_direction[1]"),
-				Config::GetFloat("DirectionalLight.m_direction[2]")
-			)
+			: m_direction(Config::GetVector3("DirectionalLight.m_direction"))
 		{}
 
 		DirectX::SimpleMath::Vector4 GetDirection() const

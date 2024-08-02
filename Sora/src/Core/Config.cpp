@@ -57,7 +57,7 @@ namespace sora::Config
 		{
 			return it->second;
 		}
-		DebugBreak();
+		__debugbreak();
 		return "";
 	}
 
@@ -68,7 +68,7 @@ namespace sora::Config
 		{
 			return it->second == "true";
 		}
-		DebugBreak();
+		__debugbreak();
 		return false;
 	}
 
@@ -79,7 +79,7 @@ namespace sora::Config
 		{
 			return std::stoi(it->second);
 		}
-		DebugBreak();
+		__debugbreak();
 		return 0;
 	}
 
@@ -90,7 +90,14 @@ namespace sora::Config
 		{
 			return std::stof(it->second);
 		}
-		DebugBreak();
+		__debugbreak();
 		return 0;
+	}
+	DirectX::SimpleMath::Vector3 GetVector3(std::string key)
+	{
+		float x = GetFloat(key + "[0]");
+		float y = GetFloat(key + "[1]");
+		float z = GetFloat(key + "[2]");
+		return { x, y, z };
 	}
 }

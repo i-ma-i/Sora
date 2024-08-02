@@ -37,15 +37,9 @@ namespace sora
 	{
 	public:
 		Camera()
-		: m_position(
-			Config::GetFloat("Camera.m_position[0]"),
-			Config::GetFloat("Camera.m_position[1]"),
-			Config::GetFloat("Camera.m_position[2]")
-		)
-			, m_yawRad(Config::GetFloat("Camera.m_yawRad"))
-			, m_pitchRad(Config::GetFloat("Camera.m_pitchRad"))
+			: m_position(Config::GetVector3("Camera.m_position"))
+			, m_target(Config::GetVector3("Camera.m_target"))
 			, m_moveSpeed(Config::GetFloat("Camera.m_moveSpeed"))
-			, m_Up(DirectX::SimpleMath::Vector3::Up)
 		{
 			m_projection = CreatePerspective(
 				DirectX::XM_PIDIV4,
@@ -53,6 +47,12 @@ namespace sora
 				Config::GetFloat("Camera.m_nearZ"),
 				Config::GetFloat("Camera.m_farZ")
 			);
+
+			// yawとpitchを計算する。
+			DirectX::SimpleMath::Vector3 direction = m_target - m_position;
+			direction.Normalize();
+			m_pitch = asinf(direction.y);
+			m_yaw = atan2f(direction.x, direction.z);
 		}
 
 		DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
@@ -65,58 +65,51 @@ namespace sora
 			using namespace DirectX;
 			using namespace DirectX::SimpleMath;
 
-			const Vector3 forward = GetForwardLH();
-			const Vector3 right = Vector3::Up.Cross(forward);
+			m_forward = GetForwardLH();
+			m_right = Vector3::Up.Cross(m_forward);
 			const float deltaMove = m_moveSpeed * deltaTime * MOVE_SCALE;
 			const Vector2 mouseDelta = Vector2((float)s_mouseInput.DeltaX(), (float)s_mouseInput.DeltaY()) * deltaTime;
 
 			// マウスホイールでズームする。
-			m_position += forward * (float)s_mouseInput.WheelValue() * deltaTime * ZOOM_SCALE;
-
-			// マウス中ボタンを押している間、カメラをパン移動する。
-			if (s_mouseInput.MiddlePressed())
-			{
-				m_position += right * mouseDelta.x * deltaMove * 5.0f;
-				m_position += Vector3::Down * mouseDelta.y * deltaMove * 5.0f;
-			}
+			m_position += m_forward * (float)s_mouseInput.WheelValue() * deltaTime * ZOOM_SCALE;
 
 			if (s_mouseInput.RightPressed())
 			{
 				// マウスの右ボタンを押している間、カメラを回転させる。
-				m_yawRad += mouseDelta.x * ROTATE_SCALE;
-				m_pitchRad -= mouseDelta.y * ROTATE_SCALE;
-				m_pitchRad = std::clamp(m_pitchRad, -XM_PIDIV2, XM_PIDIV2);
+				m_yaw += mouseDelta.x * ROTATE_SCALE;
+				m_pitch -= mouseDelta.y * ROTATE_SCALE;
+				m_pitch = std::clamp(m_pitch, -XM_PIDIV2, XM_PIDIV2);
 
 				// マウスの右ボタンを押している間,カメラを移動させる。
-				if (s_inputForward.Pressed()) m_position += forward * deltaMove;
-				if (s_inputBackward.Pressed()) m_position -= forward * deltaMove;
-				if (s_inputLeft.Pressed()) m_position -= right * deltaMove;
-				if (s_inputRight.Pressed()) m_position += right * deltaMove;
+				if (s_inputForward.Pressed()) m_position += m_forward * deltaMove;
+				if (s_inputBackward.Pressed()) m_position -= m_forward * deltaMove;
+				if (s_inputLeft.Pressed()) m_position -= m_right * deltaMove;
+				if (s_inputRight.Pressed()) m_position += m_right * deltaMove;
 				if (s_inputUp.Pressed()) m_position += Vector3::Up * deltaMove;
 				if (s_inputDown.Pressed()) m_position += Vector3::Down * deltaMove;
 			}
 
-			// TODO: ビュー行列が変換された時だけ計算する。
-			m_view = XMMatrixLookToLH(m_position, GetForwardLH(), m_Up);
+			m_target = m_position + m_forward;
+			m_view = XMMatrixLookAtLH(m_position, m_target, Vector3::Up);
 		}
 
 	private:
 		DirectX::SimpleMath::Vector3 GetForwardLH() const
 		{
 			return {
-				cosf(m_pitchRad) * sinf(m_yawRad),
-				sinf(m_pitchRad),
-				cosf(m_pitchRad) * cosf(m_yawRad)
+				cosf(m_pitch) * sinf(m_yaw),
+				sinf(m_pitch),
+				cosf(m_pitch) * cosf(m_yaw)
 			};
 		}
 
 	private:
-		DirectX::SimpleMath::Vector3 m_position;
-		float m_yawRad, m_pitchRad;
+		DirectX::SimpleMath::Vector3 m_position, m_target;
+		float m_yaw, m_pitch;
 		float m_moveSpeed;
 
 	private:
-		DirectX::SimpleMath::Vector3 m_Up;
+		DirectX::SimpleMath::Vector3 m_forward, m_right, m_up{ DirectX::SimpleMath::Vector3::Up };
 		DirectX::SimpleMath::Matrix m_view, m_projection;
 
 	private:

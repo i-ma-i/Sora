@@ -157,8 +157,8 @@ namespace sora
 				return false;
 			}
 
-			static SDL_Event event;
-			static int mouseWheel = 0;
+			SDL_Event event;
+			int mouseWheel = 0;
 			while (SDL_PollEvent(&event) != 0)
 			{
 				s_gui->ProcessEvent(&event);
@@ -194,35 +194,29 @@ namespace sora
 
 				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-3.0f, 0.0f, 0.0f));
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_quad->Draw();
 				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(3.0f, 0.0f, 0.0f));
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_quad->Draw();
 
 				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-1.5f, 0.0f, 0.0f));
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_cube->Draw();
 				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(1.5f, 0.0f, 0.0f));
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_cube->Draw();
 
 				transform.World = DirectX::SimpleMath::Matrix::Identity;
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_sphere->Draw();
 
 				transform.World = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, -0.5f, 0.0f));
 				transform.WVP = transform.World * viewProjection;
-				transform.WVP = transform.WVP.Transpose();
 				s_cbTransform->Update(s_graphics->GetContext(), transform);
 				s_plane->Draw();
 			}

@@ -10,5 +10,6 @@ namespace sora
 		bool GetBool(std::string_view key);
 		int GetInt(std::string_view key);
 		float GetFloat(std::string_view key);
+		DirectX::SimpleMath::Vector3 GetVector3(std::string key);
 	}
 }

@@ -57,7 +57,7 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to D3D11CreateDeviceAndSwapChain. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 		}
 
@@ -68,14 +68,14 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to get BackBuffer. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 
 			hr = m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, m_renderTargetView.ReleaseAndGetAddressOf());
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to CreateRenderTargetView. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to create depth stencil texture. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 
 			D3D11_DEPTH_STENCIL_VIEW_DESC dsViewDesc = {};
@@ -110,7 +110,7 @@ namespace sora
 			hr = m_device->CreateDepthStencilView(dsTexture.Get(), &dsViewDesc, m_depthStencilView.ReleaseAndGetAddressOf());
 			if (FAILED(hr)) {
 				LOG_ERROR("Failed to create depth stencil view. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to create rasterizer state. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 
 			rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -140,7 +140,7 @@ namespace sora
 			if (FAILED(hr))
 			{
 				LOG_ERROR("Failed to create rasterizer state. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace sora
 			HRESULT hr = m_device->CreateSamplerState(&samplerDesc, m_samplerState.ReleaseAndGetAddressOf());
 			if (FAILED(hr)) {
 				LOG_ERROR("Failed to create sampler state. HRESULT: {:#X}", hr);
-				DebugBreak();
+				__debugbreak();
 			}
 
 			m_immidiateContext->PSSetSamplers(0, 1, m_samplerState.GetAddressOf());
