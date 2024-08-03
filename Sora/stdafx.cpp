@@ -1,5 +1,4 @@
-﻿#define TINYOBJLOADER_IMPLEMENTATION
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "setupapi.lib")

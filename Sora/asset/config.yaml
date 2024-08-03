@@ -43,9 +43,9 @@ GUI:
 Camera:
   m_position: [0.0, 3.0, -5.0]
   m_target: [0.0, 0.0, 0.0]
-  m_moveSpeed: 1.0
-  m_nearZ: 0.1
-  m_farZ: 1000.0
+  m_moveSpeed: 50.0
+  m_nearZ: 1.0
+  m_farZ: 10000.0
 
 # ライト
 DirectionalLight:
@@ -60,9 +60,9 @@ Shader:
     PS: "shader/BasicPS.cso"
 
 # モデル
-modelpath: "asset/model/cube/cube.obj"
+# modelpath: "asset/model/cube/cube.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-1k.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-4k.obj"
 # modelpath: "Asset/model/sphere/sphere-cylcoords-16k.obj"
-# modelpath: "Asset/model/sponza/sponza.obj"
+modelpath: "Asset/model/sponza/sponza.obj"
 # modelpath: "Asset/model/teapot/teapot.obj"

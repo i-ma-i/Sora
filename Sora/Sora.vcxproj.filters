@@ -87,6 +87,9 @@
     <ClCompile Include="src\Asset\AssetRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Model.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -194,12 +197,6 @@
       <Filter>リソース ファイル\shader</Filter>
     </FxCompile>
     <FxCompile Include="asset\shader\BasicVS.hlsl">
-      <Filter>リソース ファイル\shader</Filter>
-    </FxCompile>
-    <FxCompile Include="asset\shader\ColorPS.hlsl">
-      <Filter>リソース ファイル\shader</Filter>
-    </FxCompile>
-    <FxCompile Include="asset\shader\ColorVS.hlsl">
       <Filter>リソース ファイル\shader</Filter>
     </FxCompile>
   </ItemGroup>

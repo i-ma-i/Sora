@@ -106,6 +106,7 @@ namespace sora
 
 			DirectionalLight* data = reinterpret_cast<DirectionalLight*>(mappedResource.pData);
 			data->Direction = direction;
+			data->Direction.Normalize();
 			data->PaddingDirection = 0.0f;
 			data->Color = color;
 			data->PaddingColor = 0.0f;

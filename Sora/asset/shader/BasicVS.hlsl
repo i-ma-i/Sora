@@ -2,7 +2,7 @@
 
 struct VS_INPUT
 {
-    float3 Pos : SV_Position;
+    float4 Pos : SV_Position;
     float3 Normal : NORMAL;
     float2 Tex : TEXCOORD;
 };
@@ -18,9 +18,12 @@ struct PS_INPUT
 PS_INPUT main(VS_INPUT input)
 {
     PS_INPUT output;
-    output.Pos = mul(WVP, float4(input.Pos, 1.0f));
-    output.Normal = normalize(mul(World, float4(input.Normal, 0.0f)).xyz);
+    
+    output.Pos = mul(WVP, input.Pos);
+    // Normals are only rotated, not translated.
+    output.Normal = mul(World, float4(input.Normal, 0.0f)).xyz; 
     output.Tex = input.Tex;
-    output.WorldPos = mul(World, float4(input.Pos, 1.0f)).xyz;
+    output.WorldPos = mul(World, input.Pos).xyz;
+    
     return output;
 }

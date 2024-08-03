@@ -39,10 +39,11 @@ namespace sora
 					float y = cosf(phi);
 					float z = sinf(phi) * sinf(theta);
 
-					XMFLOAT3 normal = { x, y, z };
-					XMFLOAT2 texCoord = { u, v };
+					Vector3 normal{ x, y, z };
+					normal.Normalize();
+					Vector2 texCoord{ u, v };
 
-					vertices.emplace_back(XMFLOAT3(x, y, z) * 0.5f, normal, texCoord);
+					vertices.emplace_back(Vector3(x, y, z) * 0.5f, normal, texCoord);
 				}
 			}
 			m_vertexBuffer = std::make_unique<VertexBuffer<VertexPositionNormalTexture>>(graphics, vertices);

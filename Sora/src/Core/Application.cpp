@@ -15,6 +15,7 @@
 #include "Camera.hpp"
 #include "DirectionalLight.hpp"
 #include "ConstantBuffer.hpp"
+#include "Model.hpp"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -38,6 +39,7 @@ namespace sora
 		std::unique_ptr<Cube> s_cube;
 		std::unique_ptr<Sphere> s_sphere;
 		std::unique_ptr<Plane> s_plane;
+		std::unique_ptr<Model> s_model;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
 
 		bool Create()
@@ -69,6 +71,9 @@ namespace sora
 			s_cube = std::make_unique<Cube>(s_graphics.get());
 			s_sphere = std::make_unique<Sphere>(s_graphics.get());
 			s_plane = std::make_unique<Plane>(s_graphics.get());
+
+			// モデルを作成する。
+			s_model = std::make_unique<Model>(s_graphics.get(), std::filesystem::current_path() / Config::GetString("modelpath"));
 
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
@@ -177,21 +182,20 @@ namespace sora
 				const auto view = s_camera->GetView();
 				const auto projection = s_camera->GetProjection();
 
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-3.0f, 0.0f, 0.0f)), view, projection);
-				s_quad->Draw();
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(3.0f, 0.0f, 0.0f)), view, projection);
+				/*s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-1.5f, 0.0f, 0.0f)), view, projection);
 				s_quad->Draw();
 
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-1.5f, 0.0f, 0.0f)), view, projection);
-				s_cube->Draw();
 				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(1.5f, 0.0f, 0.0f)), view, projection);
 				s_cube->Draw();
 
 				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
-				s_sphere->Draw();
+				s_sphere->Draw();*/
 
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
-				s_plane->Draw();
+				/*s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
+				s_plane->Draw();*/
+
+				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
+				s_model->Draw();
 			}
 
 			// GUIを描画する。
