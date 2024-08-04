@@ -19,7 +19,7 @@ namespace sora
 		};
 
 	public:
-		Model(Graphics* graphics, std::filesystem::path path);
+		Model(Graphics* graphics, std::filesystem::path modelpath);
 		~Model();
 
 		void Draw() const;
