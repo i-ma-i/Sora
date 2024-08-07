@@ -207,6 +207,7 @@
     <ClInclude Include="include\VertexShader.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Texture2D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl">

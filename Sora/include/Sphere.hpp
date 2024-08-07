@@ -5,6 +5,8 @@
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
 
+#include <directxtk/GeometricPrimitive.h>
+
 namespace sora
 {
 	class Sphere
@@ -21,47 +23,11 @@ namespace sora
 
 			std::vector<VertexPositionNormalTexture> vertices;
 			std::vector<UINT16> indices;
-			vertices.reserve((slices + 1) * (stacks + 1));
-			indices.reserve(slices * stacks * 6);
 
-			// 球の頂点データを作成する。
-			for (UINT i = 0; i <= stacks; i++)
-			{
-				float v = 1.0f - static_cast<float>(i) / stacks;
-				float phi = v * XM_PI;
+			// 球の頂点データとインデックスデータを作成する。
+			DirectX::DX11::GeometricPrimitive::CreateSphere(vertices, indices);
 
-				for (UINT j = 0; j <= slices; j++)
-				{
-					float u = static_cast<float>(j) / slices;
-					float theta = u * XM_2PI;
-
-					float x = sinf(phi) * cosf(theta);
-					float y = cosf(phi);
-					float z = sinf(phi) * sinf(theta);
-
-					Vector3 normal{ x, y, z };
-					normal.Normalize();
-					Vector2 texCoord{ u, v };
-
-					vertices.emplace_back(Vector3(x, y, z) * 0.5f, normal, texCoord);
-				}
-			}
 			m_vertexBuffer = std::make_unique<VertexBuffer<VertexPositionNormalTexture>>(graphics, vertices);
-
-			// 球のインデックスデータを作成する。
-			for (UINT i = 0; i < stacks; i++)
-			{
-				for (UINT j = 0; j < slices; j++)
-				{
-					indices.push_back((i + 1) * (slices + 1) + j);
-					indices.push_back(i * (slices + 1) + j + 1);
-					indices.push_back(i * (slices + 1) + j);
-
-					indices.push_back((i + 1) * (slices + 1) + j);
-					indices.push_back((i + 1) * (slices + 1) + j + 1);
-					indices.push_back(i * (slices + 1) + j + 1);
-				}
-			}
 			m_indexBuffer = std::make_unique<IndexBuffer16>(graphics, indices.data(), indices.size());
 
 			std::filesystem::path filepath = "C:/dev/Sora/Sora/asset/texture/ground.png";

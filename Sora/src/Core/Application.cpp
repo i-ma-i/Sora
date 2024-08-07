@@ -7,6 +7,7 @@
 #include "Graphics.hpp"
 #include "AssetRegistry.hpp"
 #include "GUI.hpp"
+#include "Texture2D.hpp"
 #include "Model.hpp"
 #include "Quad.hpp"
 #include "Cube.hpp"
@@ -15,7 +16,6 @@
 #include "Camera.hpp"
 #include "DirectionalLight.hpp"
 #include "ConstantBuffer.hpp"
-#include "Model.hpp"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -35,6 +35,7 @@ namespace sora
 		std::unique_ptr<Camera> s_camera;
 		std::unique_ptr<DirectionalLight> s_light;
 		std::unique_ptr<ConstantBuffer> s_constantBuffer;
+		std::unique_ptr<Texture2D> s_texture;
 		std::unique_ptr<Quad> s_quad;
 		std::unique_ptr<Cube> s_cube;
 		std::unique_ptr<Sphere> s_sphere;
@@ -72,12 +73,10 @@ namespace sora
 			s_sphere = std::make_unique<Sphere>(s_graphics.get());
 			s_plane = std::make_unique<Plane>(s_graphics.get());
 
-			// モデルを作成する。
-			s_model = std::make_unique<Model>(s_graphics.get(), std::filesystem::current_path() / Config::GetString("modelpath"));
-
 			// imguiを初期化する。
 			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
 
+			s_texture = std::make_unique<Texture2D>(std::filesystem::current_path() / "asset/texture/roof_diff.png", s_graphics.get());
 
 			// 無効なテクスチャを作成する。
 			{
@@ -186,16 +185,15 @@ namespace sora
 				s_quad->Draw();
 
 				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(1.5f, 0.0f, 0.0f)), view, projection);
-				s_cube->Draw();
+				s_cube->Draw();*/
 
+				s_texture->SetPipeline(0);
 				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
-				s_sphere->Draw();*/
+				s_sphere->Draw();
 
-				/*s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
-				s_plane->Draw();*/
-
-				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
-				s_model->Draw();
+				s_texture->SetPipeline(0);
+				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
+				s_plane->Draw();
 			}
 
 			// GUIを描画する。

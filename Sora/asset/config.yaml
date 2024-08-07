@@ -18,7 +18,7 @@ window:
 # グラフィックス
 Graphics:
   m_enableWireframe: false
-  m_cullMode: D3D11_CULL_BACK
+  m_cullMode: D3D11_CULL_NONE
   m_frontCounterClockwise: false
   # clearColor: [0.0, 0.0, 0.0, 1.0]
   # enableVSync: false
@@ -43,9 +43,9 @@ GUI:
 Camera:
   m_position: [0.0, 3.0, -5.0]
   m_target: [0.0, 0.0, 0.0]
-  m_moveSpeed: 50.0
-  m_nearZ: 1.0
-  m_farZ: 10000.0
+  m_moveSpeed: 1.0
+  m_nearZ: 0.01
+  m_farZ: 100.0
 
 # ライト
 DirectionalLight:

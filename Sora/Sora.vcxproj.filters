@@ -191,6 +191,9 @@
     <ClInclude Include="include\IndexBuffer.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Texture2D.hpp">
+      <Filter>ヘッダー ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl">
