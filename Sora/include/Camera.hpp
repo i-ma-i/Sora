@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "Keyboard.hpp"
-#include "MouseInput.hpp"
 
 namespace
 {

@@ -7,7 +7,6 @@
 
 #include "Engine.hpp"
 #include "Window.hpp"
-#include "MouseInput.hpp"
 #include "Graphics.hpp"
 #include "Camera.hpp"
 #include "DirectionalLight.hpp"

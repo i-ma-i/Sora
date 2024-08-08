@@ -167,7 +167,6 @@
     <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Graphics\Model.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
-    <ClCompile Include="src\Input\MouseInput.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -181,27 +180,20 @@
     <ClInclude Include="include\Cube.hpp" />
     <ClInclude Include="include\ButtonState.hpp" />
     <ClInclude Include="include\Camera.hpp" />
-    <ClInclude Include="include\CKeyboard.hpp" />
-    <ClInclude Include="include\CMouse.hpp" />
     <ClInclude Include="include\Config.hpp" />
     <ClInclude Include="include\ConstantBuffer.hpp" />
     <ClInclude Include="include\DirectionalLight.hpp" />
     <ClInclude Include="include\Graphics.hpp" />
     <ClInclude Include="include\IndexBuffer.hpp" />
+    <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\Model.hpp" />
-    <ClInclude Include="include\MouseInput.hpp" />
     <ClInclude Include="include\PixelShader.hpp" />
     <ClInclude Include="include\Plane.hpp" />
     <ClInclude Include="include\Quad.hpp" />
     <ClInclude Include="include\ShaderLoader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
-    <ClInclude Include="include\IKeyboard.hpp" />
     <ClInclude Include="include\GUI.hpp" />
-    <ClInclude Include="include\IMouse.hpp" />
-    <ClInclude Include="include\Input.hpp" />
-    <ClInclude Include="include\Keyboard.hpp" />
     <ClInclude Include="include\Logger.hpp" />
-    <ClInclude Include="include\Mouse.hpp" />
     <ClInclude Include="include\Sphere.hpp" />
     <ClInclude Include="include\VertexBuffer.hpp" />
     <ClInclude Include="include\VertexShader.hpp" />

@@ -2,8 +2,6 @@
 #include "Config.hpp"
 #include "Window.hpp"
 #include "Engine.hpp"
-#include "IKeyboard.hpp"
-#include "IMouse.hpp"
 #include "Graphics.hpp"
 #include "AssetRegistry.hpp"
 #include "GUI.hpp"

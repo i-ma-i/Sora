@@ -32,8 +32,6 @@ using Microsoft::WRL::ComPtr;
 // SDL2
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
-#include <SDL2/SDL_keyboard.h>
-#include <SDL2/SDL_mouse.h>
 
 // magic_enum
 #include <magic_enum.hpp>
@@ -41,3 +39,4 @@ using Microsoft::WRL::ComPtr;
 
 #include "Config.hpp"
 #include "Logger.hpp"
+#include "Input.hpp"

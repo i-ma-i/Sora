@@ -1,8 +1,5 @@
 ﻿#include "Engine.hpp"
 
-#include "CKeyboard.hpp"
-#include "CMouse.hpp"
-
 namespace sora
 {
 	Engine::Engine(): m_modules

@@ -1,5 +1,4 @@
 ﻿#include "Application.hpp"
-#include "Keyboard.hpp"
 
 using namespace sora;
 
