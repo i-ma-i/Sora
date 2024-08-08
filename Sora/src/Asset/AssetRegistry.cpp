@@ -1,8 +1,7 @@
 ﻿#include "AssetRegistry.hpp"
 
 #include "Graphics.hpp"
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
+#include "Shader.hpp"
 
 namespace sora
 {

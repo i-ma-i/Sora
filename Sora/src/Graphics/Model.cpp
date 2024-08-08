@@ -4,8 +4,7 @@
 #include <external/tiny_obj_loader.h>
 
 #include "AssetRegistry.hpp"
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
+#include "Shader.hpp"
 
 namespace sora
 {

@@ -187,16 +187,14 @@
     <ClInclude Include="include\IndexBuffer.hpp" />
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\Model.hpp" />
-    <ClInclude Include="include\PixelShader.hpp" />
     <ClInclude Include="include\Plane.hpp" />
     <ClInclude Include="include\Quad.hpp" />
-    <ClInclude Include="include\ShaderLoader.hpp" />
+    <ClInclude Include="include\Shader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
     <ClInclude Include="include\GUI.hpp" />
     <ClInclude Include="include\Logger.hpp" />
     <ClInclude Include="include\Sphere.hpp" />
     <ClInclude Include="include\VertexBuffer.hpp" />
-    <ClInclude Include="include\VertexShader.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture2D.hpp" />

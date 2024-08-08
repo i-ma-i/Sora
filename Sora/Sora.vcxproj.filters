@@ -110,17 +110,8 @@
     <ClInclude Include="include\Graphics.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="include\ShaderLoader.hpp">
-      <Filter>ヘッダー ファイル\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="include\GUI.hpp">
       <Filter>ヘッダー ファイル\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PixelShader.hpp">
-      <Filter>ヘッダー ファイル\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexShader.hpp">
-      <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\Camera.hpp">
       <Filter>ヘッダー ファイル\Camera</Filter>
@@ -168,6 +159,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="include\Model.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Shader.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

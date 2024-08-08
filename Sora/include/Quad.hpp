@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "AssetRegistry.hpp"
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
+#include "Shader.hpp"
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
 
