@@ -23,6 +23,7 @@ using Microsoft::WRL::ComPtr;
 #include <DirectXTK/VertexTypes.h>
 #include <DirectXTK/WICTextureLoader.h>
 #include <DirectXTK/SimpleMath.h>
+#include <DirectXTK/GeometricPrimitive.h>
 
 // spdlog
 #include <spdlog/spdlog.h>

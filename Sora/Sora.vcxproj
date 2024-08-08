@@ -177,8 +177,6 @@
     <ClInclude Include="include\Application.hpp" />
     <ClInclude Include="include\Asset.hpp" />
     <ClInclude Include="include\AssetRegistry.hpp" />
-    <ClInclude Include="include\Cube.hpp" />
-    <ClInclude Include="include\ButtonState.hpp" />
     <ClInclude Include="include\Camera.hpp" />
     <ClInclude Include="include\Config.hpp" />
     <ClInclude Include="include\ConstantBuffer.hpp" />
@@ -187,17 +185,15 @@
     <ClInclude Include="include\IndexBuffer.hpp" />
     <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\Model.hpp" />
-    <ClInclude Include="include\Plane.hpp" />
-    <ClInclude Include="include\Quad.hpp" />
+    <ClInclude Include="include\Primitive.hpp" />
     <ClInclude Include="include\Shader.hpp" />
     <ClInclude Include="include\Engine.hpp" />
     <ClInclude Include="include\GUI.hpp" />
     <ClInclude Include="include\Logger.hpp" />
-    <ClInclude Include="include\Sphere.hpp" />
+    <ClInclude Include="include\Texture2D.hpp" />
     <ClInclude Include="include\VertexBuffer.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Texture2D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="asset\shader\BasicPS.hlsl">

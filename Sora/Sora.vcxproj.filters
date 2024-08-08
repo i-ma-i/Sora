@@ -98,9 +98,6 @@
     <ClInclude Include="include\Logger.hpp">
       <Filter>ヘッダー ファイル\Core</Filter>
     </ClInclude>
-    <ClInclude Include="include\ButtonState.hpp">
-      <Filter>ヘッダー ファイル\Input</Filter>
-    </ClInclude>
     <ClInclude Include="external\tiny_obj_loader.h">
       <Filter>ヘッダー ファイル\External</Filter>
     </ClInclude>
@@ -125,12 +122,6 @@
     <ClInclude Include="include\ConstantBuffer.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="include\Sphere.hpp">
-      <Filter>ヘッダー ファイル\Primitive</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Cube.hpp">
-      <Filter>ヘッダー ファイル\Primitive</Filter>
-    </ClInclude>
     <ClInclude Include="include\DirectionalLight.hpp">
       <Filter>ヘッダー ファイル\Light</Filter>
     </ClInclude>
@@ -140,19 +131,10 @@
     <ClInclude Include="include\AssetRegistry.hpp">
       <Filter>ヘッダー ファイル\Asset</Filter>
     </ClInclude>
-    <ClInclude Include="include\Quad.hpp">
-      <Filter>ヘッダー ファイル\Primitive</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Plane.hpp">
-      <Filter>ヘッダー ファイル\Primitive</Filter>
-    </ClInclude>
     <ClInclude Include="include\VertexBuffer.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\IndexBuffer.hpp">
-      <Filter>ヘッダー ファイル\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture2D.hpp">
       <Filter>ヘッダー ファイル\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\Input.hpp">
@@ -162,6 +144,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="include\Shader.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Primitive.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Texture2D.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
