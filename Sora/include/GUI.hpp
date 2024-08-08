@@ -17,7 +17,6 @@ namespace sora
 	class GUI
 	{
 	private:
-		Window* m_window;
 		Graphics* m_graphics;
 		Camera* m_camera;
 		DirectionalLight* m_light;
@@ -30,8 +29,7 @@ namespace sora
 
 	public:
 		GUI(Window* window, Graphics* graphics, Camera* camera, DirectionalLight* light)
-			: m_window(window)
-			, m_graphics(graphics)
+			: m_graphics(graphics)
 			, m_camera(camera)
 			, m_light(light)
 			, m_openMouseCapture(Config::GetBool("GUI.m_openMouseCapture"))
@@ -42,7 +40,7 @@ namespace sora
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
 
-			ImGui_ImplSDL2_InitForD3D(m_window->m_window);
+			ImGui_ImplSDL2_InitForD3D(window->m_window);
 			ImGui_ImplDX11_Init(m_graphics->GetDevice(), m_graphics->GetContext());
 		}
 		~GUI()

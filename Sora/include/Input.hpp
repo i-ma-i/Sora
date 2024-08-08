@@ -45,7 +45,10 @@ namespace sora
 	{
 	public:
 		Input() = default;
-		Input(InputDevice device, uint8_t code);
+		Input(InputDevice device, uint8_t code)
+			: m_device(device)
+			, m_code(code)
+		{}
 
 		bool Clicked() const;
 
@@ -58,20 +61,29 @@ namespace sora
 		uint8_t m_code = 0;
 	};
 
+	namespace Mouse
+	{
+		inline const Input LEFT{ InputDevice::Mouse, 1 };
+		inline const Input MIDDLE{ InputDevice::Mouse, 2 };
+		inline const Input RIGHT{ InputDevice::Mouse, 3 };
+		inline const Input BACK{ InputDevice::Mouse, 4 };
+		inline const Input FORWARD{ InputDevice::Mouse, 5 };
+	};
+
 	class MouseInput
 	{
 	public:
-		bool LeftClicked() const;
-		bool LeftPressed() const;
-		bool LeftReleased() const;
+		inline bool LeftClicked() const { return Mouse::LEFT.Clicked(); }
+		inline bool LeftPressed() const { return Mouse::LEFT.Pressed(); }
+		inline bool LeftReleased() const { return Mouse::LEFT.Released(); }
 
-		bool RightClicked() const;
-		bool RightPressed() const;
-		bool RightReleased() const;
+		inline bool RightClicked() const { return Mouse::RIGHT.Clicked(); }
+		inline bool RightPressed() const { return Mouse::RIGHT.Pressed(); }
+		inline bool RightReleased() const { return Mouse::RIGHT.Released(); }
 
-		bool MiddleClicked() const;
-		bool MiddlePressed() const;
-		bool MiddleReleased() const;
+		inline bool MiddleClicked() const { return Mouse::MIDDLE.Clicked(); }
+		inline bool MiddlePressed() const { return Mouse::MIDDLE.Pressed(); }
+		inline bool MiddleReleased() const { return Mouse::MIDDLE.Released(); }
 
 		int PositionX() const;
 		int PositionY() const;
@@ -80,15 +92,6 @@ namespace sora
 
 		int WheelValue() const;
 	};
-
-	namespace Mouse
-	{
-		inline const Input LEFT{ InputDevice::Mouse, 1 };
-		inline const Input MIDDLE{ InputDevice::Mouse, 2 };
-		inline const Input RIGHT{ InputDevice::Mouse, 3 };
-		inline const Input BACK{ InputDevice::Mouse, 4 };
-		inline const Input FORWARD{ InputDevice::Mouse, 5 };
-	}
 
 	class IMouse
 	{

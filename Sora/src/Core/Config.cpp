@@ -93,6 +93,7 @@ namespace sora::Config
 		__debugbreak();
 		return 0;
 	}
+
 	DirectX::SimpleMath::Vector3 GetVector3(std::string key)
 	{
 		float x = GetFloat(key + "[0]");

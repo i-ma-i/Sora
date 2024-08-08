@@ -62,14 +62,14 @@ namespace sora
 			s_light = std::make_unique<DirectionalLight>();
 			s_constantBuffer = std::make_unique<ConstantBuffer>(s_graphics.get());
 
+			// imguiを初期化する。
+			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
+
 			// プリミティブを作成する。
 			s_quad = std::make_unique<Quad>(s_graphics.get());
 			s_cube = std::make_unique<Cube>(s_graphics.get());
 			s_sphere = std::make_unique<Sphere>(s_graphics.get());
 			s_plane = std::make_unique<Plane>(s_graphics.get());
-
-			// imguiを初期化する。
-			s_gui = std::make_unique<GUI>(s_window.get(), s_graphics.get(), s_camera.get(), s_light.get());
 
 			s_texture = std::make_unique<Texture2D>(std::filesystem::current_path() / "asset/texture/roof_diff.png", s_graphics.get());
 
