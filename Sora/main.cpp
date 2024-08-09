@@ -1,7 +1,5 @@
 ﻿#include "Application.hpp"
 
-using namespace sora;
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
 	using namespace sora;
@@ -20,13 +18,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	ShowWindow(consoleWindow, SW_MAXIMIZE);
 #endif
 
-	Input Escape = Keyboard::KEY_ESCAPE;
-	while (Application::Update())
-	{
-		if (Escape.Clicked())
-			Application::Exit();
-	}
-
+	Application::Create();
+	Application::Run();
+	Application::Destroy();
 
 #if DEBUG || _DEBUG
 	// コンソールウィンドウを解放する。

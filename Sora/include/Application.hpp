@@ -4,7 +4,8 @@ namespace sora
 {
 	namespace Application
 	{
-		bool Update();
-		void Exit();
-	}
+		void Create();
+		void Run();
+		void Destroy();
+	};
 }

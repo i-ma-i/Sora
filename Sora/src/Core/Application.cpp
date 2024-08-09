@@ -37,8 +37,11 @@ namespace sora
 		std::unique_ptr<Plane> s_plane;
 		std::unique_ptr<Model> s_model;
 		ComPtr<ID3D11ShaderResourceView> s_invalidTexture;
+	}
 
-		bool Create()
+	namespace Application
+	{
+		void Create()
 		{
 			Config::Create(std::filesystem::current_path() / "asset/config.yaml");
 			Logger::Create();
@@ -52,7 +55,7 @@ namespace sora
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			{
 				LOG_ERROR("[SDL] Failed to initialize.  error: {}", SDL_GetError());
-				return false;
+				__debugbreak();
 			}
 
 			s_window = std::make_unique<Window>();
@@ -113,8 +116,64 @@ namespace sora
 			LOG_INFO("Creation completed successfully.");
 			s_initialized = true;
 			s_running = true;
+		}
 
-			return true;
+		void Run()
+		{
+			while (s_running)
+			{
+				SDL_Event event;
+				int mouseWheel = 0;
+				while (SDL_PollEvent(&event) != 0)
+				{
+					s_gui->ProcessEvent(&event);
+
+					if (event.type == SDL_QUIT)
+					{
+						return;
+					}
+					if (event.type == SDL_MOUSEWHEEL)
+					{
+						mouseWheel = event.wheel.y;
+					}
+				}
+
+				Engine::GetModule<IKeyboard>()->Update();
+				Engine::GetModule<IMouse>()->Update(mouseWheel);
+				s_camera->Update(0.0167f);
+
+				// 描画を開始する。
+				s_graphics->Begin();
+
+				// オブジェクトを描画する。
+				{
+					s_constantBuffer->UpdateCamera(s_camera->GetPosition());
+					s_constantBuffer->UpdateDirectionalLight(s_light->m_direction, s_light->m_color, s_light->m_ambient);
+
+					const auto view = s_camera->GetView();
+					const auto projection = s_camera->GetProjection();
+
+					/*s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-1.5f, 0.0f, 0.0f)), view, projection);
+					s_quad->Draw();
+
+					s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(1.5f, 0.0f, 0.0f)), view, projection);
+					s_cube->Draw();*/
+
+					s_texture->SetPipeline(0);
+					s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
+					s_sphere->Draw();
+
+					s_texture->SetPipeline(0);
+					s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
+					s_plane->Draw();
+				}
+
+				// GUIを描画する。
+				s_gui->Draw();
+
+				// 描画を終了終了する。
+				s_graphics->End();
+			}
 		}
 
 		void Destroy()
@@ -127,82 +186,6 @@ namespace sora
 
 			// Loggerを終了する。
 			Logger::Cleanup();
-		}
-	}
-
-	namespace Application
-	{
-		bool Update()
-		{
-			if (s_initialized == false)
-			{
-				Create();
-			}
-
-			if (s_running == false)
-			{
-				Destroy();
-				return false;
-			}
-
-			SDL_Event event;
-			int mouseWheel = 0;
-			while (SDL_PollEvent(&event) != 0)
-			{
-				s_gui->ProcessEvent(&event);
-
-				if (event.type == SDL_QUIT)
-				{
-					return false;
-				}
-				if(event.type == SDL_MOUSEWHEEL)
-				{
-					mouseWheel = event.wheel.y;
-				}
-			}
-
-			Engine::GetModule<IKeyboard>()->Update();
-			Engine::GetModule<IMouse>()->Update(mouseWheel);
-			s_camera->Update(0.0167f);
-
-			// 描画を開始する。
-			s_graphics->Begin();
-
-			// オブジェクトを描画する。
-			{
-				s_constantBuffer->UpdateCamera(s_camera->GetPosition());
-				s_constantBuffer->UpdateDirectionalLight(s_light->m_direction, s_light->m_color, s_light->m_ambient);
-
-				const auto view = s_camera->GetView();
-				const auto projection = s_camera->GetProjection();
-
-				/*s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(-1.5f, 0.0f, 0.0f)), view, projection);
-				s_quad->Draw();
-
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(1.5f, 0.0f, 0.0f)), view, projection);
-				s_cube->Draw();*/
-
-				s_texture->SetPipeline(0);
-				s_constantBuffer->UpdateCoordinate(Matrix::Identity, view, projection);
-				s_sphere->Draw();
-
-				s_texture->SetPipeline(0);
-				s_constantBuffer->UpdateCoordinate(Matrix::CreateTranslation(Vector3(0.0f, -0.5f, 0.0f)), view, projection);
-				s_plane->Draw();
-			}
-
-			// GUIを描画する。
-			s_gui->Draw();
-
-			// 描画を終了終了する。
-			s_graphics->End();
-
-			return true;
-		}
-
-		void Exit()
-		{
-			s_running = false;
 		}
 	}
 }
